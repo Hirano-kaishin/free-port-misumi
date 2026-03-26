@@ -1,13 +1,12 @@
-/* =============================================
-   FREE PORT — Café & Outdoor | 三角西港
-   main.js
-   ============================================= */
+/* FREE PORT — main.js */
 
+/* ── Nav: スクロールで背景を追加 ── */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 60);
 });
 
+/* ── Reveal on scroll ── */
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -15,10 +14,11 @@ const revealObserver = new IntersectionObserver((entries) => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.12 });
+}, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+/* ── Mobile menu toggle ── */
 function toggleMenu() {
   const links = document.querySelector('.nav-links');
   if (!links) return;
