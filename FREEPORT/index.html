@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREE PORT | Café & Outdoor — 三角西港</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Barlow+Condensed:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sand: #E8DCC8;
+  --cream: #F5EFE4;
+  --ocean: #2B5F75;
+  --sky: #5B98B0;
+  --rust: #C4622D;
+  --driftwood: #8B7355;
+  --charcoal: #2A2A2A;
+  --white: #FAFAF8;
+  --nav-h: 72px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--charcoal);
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  background: transparent;
+  transition: background 0.4s ease, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  background: rgba(42,42,42,0.92);
+  backdrop-filter: blur(12px);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--rust); }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sand);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--rust); }
+.nav-reserve {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  background: var(--rust);
+  padding: 10px 22px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.nav-reserve:hover { background: #a84f22; }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.hamburger span { display: block; width: 26px; height: 2px; background: var(--white); }
+
+/* ── HERO ── */
+#hero {
+  height: 100vh;
+  min-height: 600px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.0) 40%, rgba(0,0,0,0.6) 100%),
+    url('https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1800&q=80') center/cover no-repeat;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(43,95,117,0.3) 0%, transparent 60%);
+}
+.hero-content {
+  position: relative;
+  padding: 0 64px 80px;
+  max-width: 800px;
+}
+.hero-badge {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--rust);
+  border: 1px solid var(--rust);
+  padding: 6px 14px;
+  margin-bottom: 24px;
+  animation: fadeUp 1s 0.2s both;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 12vw, 160px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  animation: fadeUp 1s 0.4s both;
+}
+.hero-title span { color: var(--rust); }
+.hero-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(16px, 2vw, 22px);
+  letter-spacing: 0.15em;
+  color: var(--sand);
+  margin-top: 16px;
+  animation: fadeUp 1s 0.6s both;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  right: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: fadeUp 1s 1s both;
+}
+.hero-scroll span {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sand);
+  writing-mode: vertical-rl;
+}
+.hero-scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, var(--rust), transparent);
+  animation: scrollLine 1.5s ease-in-out infinite;
+}
+
+/* ── INFO BAR ── */
+.info-bar {
+  background: var(--ocean);
+  padding: 14px 48px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  overflow-x: auto;
+}
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.info-item svg { flex-shrink: 0; }
+.info-item-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.info-item-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+.info-divider {
+  width: 1px; height: 30px;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+/* ── HERITAGE BANNER ── */
+.heritage {
+  background: var(--rust);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.heritage-icon {
+  font-size: 20px;
+}
+.heritage-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.heritage-text strong {
+  font-weight: 600;
+}
+
+/* ── SECTION COMMONS ── */
+section { position: relative; }
+.section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 6vw, 80px);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.section-body {
+  font-size: 15px;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.7);
+  font-weight: 300;
+}
+
+/* ── ABOUT ── */
+#about {
+  background: var(--charcoal);
+  padding: 120px 0 0;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 600px;
+}
+.about-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+}
+.about-img {
+  overflow: hidden;
+  background: var(--driftwood);
+}
+.about-img:first-child {
+  grid-column: 1 / -1;
+}
+.about-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.about-img:hover img { transform: scale(1.05); }
+.about-text {
+  padding: 80px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #222;
+}
+.about-text .section-title { color: var(--white); margin-bottom: 28px; }
+.about-accent {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-style: italic;
+  color: var(--sand);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 36px;
+}
+.tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sky);
+  border: 1px solid var(--sky);
+  padding: 6px 14px;
+}
+
+/* ── SERVICES ── */
+#services {
+  background: var(--cream);
+  padding: 100px 64px;
+}
+.services-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
+.services-header .section-title { color: var(--charcoal); }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.service-card {
+  background: var(--charcoal);
+  padding: 56px 40px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--rust);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.service-card:hover { transform: translateY(-4px); }
+.service-card:hover::before { transform: scaleX(1); }
+.service-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  color: rgba(255,255,255,0.06);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.service-icon {
+  width: 48px; height: 48px;
+  margin-bottom: 24px;
+}
+.service-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.service-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+}
+.service-desc {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+}
+
+/* ── CAMP ── */
+#camp {
+  background: var(--charcoal);
+  padding: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.camp-image {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ocean);
+}
+.camp-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+}
+.camp-image-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, transparent 60%, var(--charcoal) 100%);
+}
+.camp-content {
+  padding: 100px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.camp-content .section-title { color: var(--white); margin-bottom: 32px; }
+.camp-features {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.camp-feature {
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.camp-feature:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+.camp-feature-icon {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  background: var(--ocean);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-top: 2px;
+}
+.camp-feature-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.camp-feature-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+  font-weight: 300;
+}
+.camp-cta {
+  margin-top: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust);
+  text-decoration: none;
+  border: 1px solid var(--rust);
+  padding: 16px 32px;
+  transition: all 0.3s;
+  align-self: flex-start;
+}
+.camp-cta:hover {
+  background: var(--rust);
+  color: var(--white);
+}
+
+/* ── BEACH ── */
+#beach {
+  background: var(--ocean);
+  padding: 100px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#beach::before {
+  content: 'PRIVATE';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20vw;
+  color: rgba(255,255,255,0.04);
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.beach-content { position: relative; max-width: 700px; margin: 0 auto; }
+.beach-content .section-title { color: var(--white); margin-bottom: 24px; }
+.beach-wave {
+  font-size: 48px;
+  margin-bottom: 24px;
+}
+.beach-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+  text-align: left;
+}
+.beach-feature {
+  background: rgba(255,255,255,0.06);
+  padding: 28px 24px;
+  border-top: 2px solid rgba(255,255,255,0.15);
+}
+.beach-feature-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+.beach-feature-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+}
+
+/* ── INSTAGRAM ── */
+#instagram {
+  background: var(--charcoal);
+  padding: 100px 64px;
+}
+.instagram-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+.instagram-header .section-title { color: var(--white); }
+.instagram-follow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.instagram-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #333;
+  position: relative;
+}
+.instagram-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+.instagram-overlay {
+  position: absolute; inset: 0;
+  background: rgba(196,98,45,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.instagram-overlay svg { width: 32px; height: 32px; }
+.instagram-item:hover img { transform: scale(1.08); }
+.instagram-item:hover .instagram-overlay { opacity: 1; }
+
+/* ── MENU HIGHLIGHT ── */
+#menu {
+  background: #1a1a1a;
+  padding: 100px 64px;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  margin-top: 56px;
+}
+.menu-item {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 24px;
+}
+.menu-item-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.menu-item-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sky);
+  margin-bottom: 10px;
+}
+.menu-item-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--rust);
+  letter-spacing: 0.05em;
+}
+
+/* ── ACCESS ── */
+#access {
+  background: var(--cream);
+  padding: 100px 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.access-info .section-title { color: var(--charcoal); margin-bottom: 40px; }
+.access-detail {
+  margin-bottom: 32px;
+}
+.access-detail-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 8px;
+}
+.access-detail-value {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--charcoal);
+  font-weight: 400;
+}
+.hours-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.hours-table td {
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--charcoal);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.hours-table td:first-child {
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.1em;
+  color: var(--driftwood);
+  width: 120px;
+}
+.map-container {
+  aspect-ratio: 4/3;
+  background: var(--driftwood);
+  overflow: hidden;
+  position: relative;
+}
+.map-container iframe {
+  width: 100%; height: 100%;
+  border: 0;
+  filter: grayscale(30%) contrast(1.1);
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--charcoal);
+  padding: 64px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer-inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 48px;
+}
+.footer-brand-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.footer-brand-name span { color: var(--rust); }
+.footer-tagline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--driftwood);
+  margin-bottom: 24px;
+}
+.footer-address {
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.4);
+}
+.footer-col-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+.footer-bottom {
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-copy {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.25);
+}
+.social-links { display: flex; gap: 20px; }
+.social-links a {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: all 0.2s;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+.social-links a:hover {
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrollLine {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(0.6); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  #camp { grid-template-columns: 1fr; }
+  .camp-image { position: relative; height: 400px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  #access { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links, .nav-reserve { display: none; }
+  .hamburger { display: flex; }
+  .hero-content { padding: 0 24px 60px; }
+  .hero-scroll { display: none; }
+  .info-bar { padding: 12px 24px; }
+  .heritage { padding: 12px 24px; }
+  #about, #services, #camp, #beach, #instagram, #menu, #access { padding-left: 24px; padding-right: 24px; }
+  .services-grid { grid-template-columns: 1fr; }
+  .beach-features { grid-template-columns: 1fr; }
+  .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+  .menu-grid { grid-template-columns: 1fr 1fr; }
+  footer { padding: 40px 24px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 40px; }
+  .instagram-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">FREE<span>PORT</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#camp">Camp</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#access">Access</a></li>
+  </ul>
+  <a href="#camp" class="nav-reserve">Reserve</a>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Misumi — Kumamoto · Est. 2024</div>
+    <h1 class="hero-title">FREE<br><span>PORT</span></h1>
+    <p class="hero-sub">Café &amp; Outdoor Shop — Private Beach Camp</p>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- INFO BAR -->
+<div class="info-bar">
+  <div class="info-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    <div>
+      <div class="info-item-label">Location</div>
+      <div class="info-item-value">熊本県宇城市三角町三角浦 1337-11</div>
+    </div>
+  </div>
+  <div class="info-divider"></div>
+  <div class="info-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    <div>
+      <div class="info-item-label">Hours</div>
+      <div class="info-item-value">10:00 – 18:00（火曜定休）</div>
+    </div>
+  </div>
+  <div class="info-divider"></div>
+  <div class="info-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <div>
+      <div class="info-item-label">Private Beach</div>
+      <div class="info-item-value">完全プライベート空間あり</div>
+    </div>
+  </div>
+  <div class="info-divider"></div>
+  <div class="info-item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"><path d="M5 3l14 9-14 9V3z"/></svg>
+    <div>
+      <div class="info-item-label">Camp</div>
+      <div class="info-item-value">手ぶらプランあり</div>
+    </div>
+  </div>
+</div>
+
+<!-- HERITAGE BANNER -->
+<div class="heritage">
+  <span class="heritage-icon">🏛</span>
+  <p class="heritage-text">
+    <strong>世界文化遺産「三角西港」</strong>まで徒歩圏内 — 明治時代の港町文化とウエストコーストの風が交差する場所
+  </p>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-images">
+      <div class="about-img" style="height: 320px;">
+        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1200&q=80" alt="店舗外観">
+      </div>
+      <div class="about-img" style="height: 220px;">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80" alt="コーヒー">
+      </div>
+      <div class="about-img" style="height: 220px;">
+        <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80" alt="アウトドア">
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <p class="section-label">About Free Port</p>
+      <h2 class="section-title">COAST<br>MEETS<br>CULTURE</h2>
+      <p class="about-accent">"世界遺産の港町で、<br>西海岸の風を感じる場所。"</p>
+      <p class="section-body">
+        熊本・三角西港のすぐそばに佇む、カフェ＆アウトドアショップ。<br>
+        テイクアウトコーヒーから手ぶらキャンプ、プライベートビーチまで。<br>
+        日常を離れ、海と空と、焚き火の時間を。
+      </p>
+      <div class="tag-row">
+        <span class="tag">Specialty Coffee</span>
+        <span class="tag">Outdoor Gear</span>
+        <span class="tag">Beach Camp</span>
+        <span class="tag">World Heritage</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <p class="section-label" style="color:var(--rust);">What We Offer</p>
+    <h2 class="section-title" style="color:var(--charcoal);">THREE<br>WAYS TO<br>ENJOY</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--sky)" stroke-width="1.5">
+          <path d="M8 36s2-8 8-8 8 8 16 8 8-8 8-8"/>
+          <path d="M24 4l4 12H20L24 4z"/>
+          <circle cx="24" cy="20" r="4"/>
+        </svg>
+      </div>
+      <div class="service-name">Coffee Stand</div>
+      <div class="service-sub">Specialty &amp; Takeaway</div>
+      <p class="service-desc">
+        世界遺産を眺めながら味わうスペシャルティコーヒー。テイクアウトで港の風と一緒に。ラテ、ドリップ、季節のドリンクを丁寧に。
+      </p>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-num">02</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--sky)" stroke-width="1.5">
+          <path d="M6 42l8-14h20l8 14H6z"/>
+          <path d="M24 10l6 18H18l6-18z"/>
+          <circle cx="24" cy="6" r="3"/>
+        </svg>
+      </div>
+      <div class="service-name">Outdoor Shop</div>
+      <div class="service-sub">Gear &amp; Goods</div>
+      <p class="service-desc">
+        西海岸テイストのアウトドアギアをセレクト。カヤック、焚き火台、キャンプウェアなど、フィールドで使えるこだわりのアイテムが揃う。
+      </p>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">03</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 48 48" fill="none" stroke="var(--sky)" stroke-width="1.5">
+          <path d="M4 38c0-8 4-14 8-18l12 6 12-6c4 4 8 10 8 18H4z"/>
+          <path d="M24 20V8"/>
+          <circle cx="24" cy="6" r="3"/>
+        </svg>
+      </div>
+      <div class="service-name">Camp &amp; Beach</div>
+      <div class="service-sub">Glamping &amp; Private Beach</div>
+      <p class="service-desc">
+        完全プライベートのビーチへ降りられるキャンプ体験。手ぶらプランでテントから焚き火道具まで全てご用意。非日常の一夜を。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CAMP -->
+<section id="camp">
+  <div class="camp-image">
+    <img src="https://images.unsplash.com/photo-1537225228614-56cc3556d7ed?w=1200&q=80" alt="Camp">
+    <div class="camp-image-overlay"></div>
+  </div>
+  <div class="camp-content">
+    <p class="section-label">Camp Stay</p>
+    <h2 class="section-title reveal">STAY<br>UNDER<br>THE STARS</h2>
+    <p class="section-body reveal">
+      三角の星空の下、波音を聞きながら眠る。<br>
+      FREE PORTのキャンプ体験は、非日常を丸ごとお届けします。
+    </p>
+    <div class="camp-features">
+      <div class="camp-feature reveal">
+        <div class="camp-feature-icon">🏕</div>
+        <div>
+          <div class="camp-feature-title">手ぶらプラン</div>
+          <p class="camp-feature-desc">テント・寝袋・焚き火台・テーブルセット完備。身ひとつで来て、ただ焚き火の前に座ってください。</p>
+        </div>
+      </div>
+      <div class="camp-feature reveal reveal-delay-1">
+        <div class="camp-feature-icon">🌊</div>
+        <div>
+          <div class="camp-feature-title">プライベートビーチ</div>
+          <p class="camp-feature-desc">宿泊者専用のプライベートビーチへ直接アクセス。他の人を気にせず、海を独り占め。</p>
+        </div>
+      </div>
+      <div class="camp-feature reveal reveal-delay-2">
+        <div class="camp-feature-icon">☀️</div>
+        <div>
+          <div class="camp-feature-title">モーニングコーヒー</div>
+          <p class="camp-feature-desc">翌朝は海を眺めながらFREE PORTのコーヒーを。世界遺産の朝日と一緒にどうぞ。</p>
+        </div>
+      </div>
+      <div class="camp-feature reveal reveal-delay-3">
+        <div class="camp-feature-icon">🚣</div>
+        <div>
+          <div class="camp-feature-title">カヤック体験</div>
+          <p class="camp-feature-desc">三角の入り江をカヤックで探検。ガイドなしでも楽しめる初心者向けコースもご用意。</p>
+        </div>
+      </div>
+    </div>
+    <a href="mailto:info@freeport-misumi.jp" class="camp-cta reveal">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      予約・お問い合わせ
+    </a>
+  </div>
+</section>
+
+<!-- PRIVATE BEACH -->
+<section id="beach">
+  <div class="beach-content">
+    <div class="beach-wave">🏖</div>
+    <p class="section-label">Private Beach</p>
+    <h2 class="section-title reveal">YOUR OWN<br>PIECE OF<br>THE COAST</h2>
+    <p class="section-body reveal">
+      完全プライベートなビーチへのアクセス権付き。<br>
+      誰にも邪魔されない、あなただけの海岸線。
+    </p>
+    <div class="beach-features">
+      <div class="beach-feature reveal">
+        <div class="beach-feature-title">🌅 サンセット</div>
+        <p class="beach-feature-desc">三角灘に沈む夕日は、ここだけの絶景。ビーチチェアでゆっくり眺めてください。</p>
+      </div>
+      <div class="beach-feature reveal reveal-delay-1">
+        <div class="beach-feature-title">🔥 ビーチ焚き火</div>
+        <p class="beach-feature-desc">夜は砂浜で焚き火。波音と炎のゆらぎの中、時間を忘れる夜を。</p>
+      </div>
+      <div class="beach-feature reveal reveal-delay-2">
+        <div class="beach-feature-title">🌟 満天の星</div>
+        <p class="beach-feature-desc">光害の少ない三角の夜空は満天の星。寝転んで宇宙を独り占めしてください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <p class="section-label reveal">Café Menu</p>
+  <h2 class="section-title reveal" style="color:var(--white);">DRINKS<br>&amp; MORE</h2>
+  <div class="menu-grid">
+    <div class="menu-item reveal">
+      <div class="menu-item-name">House Drip Coffee</div>
+      <div class="menu-item-sub">Specialty Single Origin</div>
+      <div class="menu-item-price">¥ 550</div>
+    </div>
+    <div class="menu-item reveal reveal-delay-1">
+      <div class="menu-item-name">Sea Salt Latte</div>
+      <div class="menu-item-sub">Original Blend</div>
+      <div class="menu-item-price">¥ 680</div>
+    </div>
+    <div class="menu-item reveal reveal-delay-2">
+      <div class="menu-item-name">Cold Brew</div>
+      <div class="menu-item-sub">12hr Cold Extraction</div>
+      <div class="menu-item-price">¥ 620</div>
+    </div>
+    <div class="menu-item reveal">
+      <div class="menu-item-name">Chai Tea Latte</div>
+      <div class="menu-item-sub">Spiced Blend</div>
+      <div class="menu-item-price">¥ 650</div>
+    </div>
+    <div class="menu-item reveal reveal-delay-1">
+      <div class="menu-item-name">Sunset Soda</div>
+      <div class="menu-item-sub">Seasonal Craft Soda</div>
+      <div class="menu-item-price">¥ 580</div>
+    </div>
+    <div class="menu-item reveal reveal-delay-2">
+      <div class="menu-item-name">Granola Bowl</div>
+      <div class="menu-item-sub">Yogurt &amp; Local Honey</div>
+      <div class="menu-item-price">¥ 780</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section id="instagram">
+  <div class="instagram-header">
+    <div>
+      <p class="section-label">Instagram</p>
+      <h2 class="section-title">@FREEPORT<br>MISUMI</h2>
+    </div>
+    <a href="https://instagram.com" class="instagram-follow">
+      Follow Us
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="instagram-grid">
+    <div class="instagram-item">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" alt="Coffee">
+      <div class="instagram-overlay"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+    </div>
+    <div class="instagram-item">
+      <img src="https://images.unsplash.com/photo-1537225228614-56cc3556d7ed?w=600&q=80" alt="Camp">
+      <div class="instagram-overlay"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+    </div>
+    <div class="instagram-item">
+      <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=600&q=80" alt="Beach">
+      <div class="instagram-overlay"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+    </div>
+    <div class="instagram-item">
+      <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&q=80" alt="Shop">
+      <div class="instagram-overlay"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS -->
+<section id="access">
+  <div class="access-info">
+    <p class="section-label">Access</p>
+    <h2 class="section-title reveal" style="color:var(--charcoal);">FIND<br>YOUR<br>PORT</h2>
+    <div class="access-detail reveal">
+      <div class="access-detail-label">住所</div>
+      <div class="access-detail-value">熊本県宇城市三角町<br>三角浦 1337-11</div>
+    </div>
+    <div class="access-detail reveal">
+      <div class="access-detail-label">営業時間</div>
+      <table class="hours-table">
+        <tr><td>月・水〜金</td><td>10:00 – 18:00</td></tr>
+        <tr><td>土・日・祝</td><td>9:00 – 19:00</td></tr>
+        <tr><td>定休日</td><td>火曜日</td></tr>
+      </table>
+    </div>
+    <div class="access-detail reveal">
+      <div class="access-detail-label">アクセス</div>
+      <div class="access-detail-value">
+        三角駅より徒歩5分<br>
+        三角西港（世界文化遺産）より徒歩3分<br>
+        駐車場あり
+      </div>
+    </div>
+    <div class="access-detail reveal">
+      <div class="access-detail-label">お問い合わせ</div>
+      <div class="access-detail-value">info@freeport-misumi.jp</div>
+    </div>
+  </div>
+  <div class="map-container reveal">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3327.0!2d130.4500!3d32.5000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x354038b4c8b89a51%3A0x9c5a4a8f6d8b7e2c!2z5LqM6JOKXI56IOWuiuS_neWNg!5e0!3m2!1sja!2sjp!4v1234567890"
+      allowfullscreen="" loading="lazy"
+      title="FREE PORT アクセスマップ">
+    </iframe>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">FREE<span>PORT</span></div>
+      <div class="footer-tagline">Café &amp; Outdoor — 三角西港</div>
+      <div class="footer-address">
+        〒869-3203<br>
+        熊本県宇城市三角町三角浦 1337-11<br>
+        Tel: 000-0000-0000<br>
+        info@freeport-misumi.jp
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigation</div>
+      <ul class="footer-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#camp">Camp Stay</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#access">Access</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Experience</div>
+      <ul class="footer-links">
+        <li><a href="#camp">手ぶらキャンプ</a></li>
+        <li><a href="#beach">プライベートビーチ</a></li>
+        <li><a href="#services">カヤック体験</a></li>
+        <li><a href="#services">アウトドアギア</a></li>
+        <li><a href="#instagram">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2024 FREE PORT. All rights reserved. — 三角西港・熊本</div>
+    <div class="social-links">
+      <a href="https://instagram.com" target="_blank" rel="noopener">IG</a>
+      <a href="#" target="_blank" rel="noopener">FB</a>
+      <a href="#" target="_blank" rel="noopener">TW</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 60) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+// Mobile menu toggle
+function toggleMenu() {
+  const links = document.querySelector('.nav-links');
+  if (!links) return;
+  if (links.style.display === 'flex') {
+    links.style.display = 'none';
+  } else {
+    links.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:72px;left:0;right:0;background:rgba(42,42,42,0.97);padding:32px;gap:24px;';
+  }
+}
+</script>
+</body>
+</html>
