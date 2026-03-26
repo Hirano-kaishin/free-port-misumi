@@ -1,5 +1,8 @@
 /* FREE PORT — main.js */
 
+/* ── JS読み込み完了を body に通知 ── */
+document.body.classList.add('js-loaded');
+
 /* ── Nav: スクロールで背景を追加 ── */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
