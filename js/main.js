@@ -1,15 +1,13 @@
 /* =============================================
-   FREE PORT â CafÃ© & Outdoor | ä¸è§è¥¿æ¸¯
+   FREE PORT — Café & Outdoor | 三角西港
    main.js
    ============================================= */
 
-/* ââ Nav: ã¹ã¯ã­ã¼ã«ã§è¥²æ¢ãè¿å  ââ */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 60);
 });
 
-/* ââ Reveal on scroll (IntersectionObserver) ââ */
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -21,7 +19,6 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-/* ââ Mobile menu toggle ââ */
 function toggleMenu() {
   const links = document.querySelector('.nav-links');
   if (!links) return;
