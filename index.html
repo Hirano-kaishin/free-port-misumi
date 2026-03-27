@@ -16,13 +16,13 @@ body{background:#0e0e0e;font-family:'Barlow Condensed',sans-serif;display:flex;f
 .logo-wrap svg{width:100%;height:auto}
 .tagline{font-size:10px;letter-spacing:0.38em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:52px;animation:fd 1s 0.15s ease both}
 .top-nav{display:flex;flex-direction:column;align-items:center;gap:0;animation:fu 1s 0.3s ease both}
-.top-nav a{display:block;font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.5vw,62px);letter-spacing:0.07em;color:#FAF9F6;line-height:1.1;padding:4px 28px;position:relative;transition:color 0.3s,letter-spacing 0.3s;text-decoration:none}
+.top-nav a{display:block;font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.5vw,62px);letter-spacing:0.07em;color:#FAF9F6;line-height:1.1;padding:4px 28px;position:relative;transition:color 0.3s,letter-spacing 0.3s;text-decoration:none;text-align:center}
 .top-nav .ja{display:block;font-family:'Noto Sans JP',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.15em;color:rgba(255,255,255,0.38);line-height:1;margin-bottom:2px;text-transform:none;text-align:center}
 .top-nav a::after{content:'';position:absolute;left:0;bottom:1px;width:0;height:1px;background:#C4622D;transition:width 0.35s}
 .top-nav a+a{border-top:1px solid rgba(255,255,255,0.05)}
 .top-nav a:hover{color:#C4622D;letter-spacing:0.11em}
 .top-nav a:hover::after{width:100%}
-.loc{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:1;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.25);animation:fu 1s 0.8s ease both;white-space:nowraw;text-align:center}
+.loc{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:1;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.25);animation:fu 1s 0.8s ease both;white-space:nowrap;text-align:center}
 .ig{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:1;writing-mode:vertical-rl;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-decoration:none;transition:color 0.2s;animation:fi 1s 1s ease both}
 .ig:hover{color:#C4622D}
 @keyframes fd{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
@@ -65,7 +65,6 @@ body{background:#0e0e0e;font-family:'Barlow Condensed',sans-serif;display:flex;f
     <a href="access.html"><span class="ja">アクセス</span>Access</a>
   </nav>
 </main>
-<p class="loc">&#19977;&#35282;&#35199;&#28207; &middot; &#29579;&#26412;&#30476;&#23431;&#22478;&#24066;</p>
 <a class="ig" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
 </body>
 </html>
