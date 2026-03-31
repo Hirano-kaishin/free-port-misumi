@@ -32,23 +32,23 @@ body{background:#0e0e0e;font-family:'Barlow Condensed',sans-serif;display:flex;f
 .shop-logo{width:160px;margin-bottom:8px;opacity:0.6}
 .shop-logo svg{width:100%;height:auto}
 .sub-heading{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,3vw,28px);letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:28px}
-.sub-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.sub-nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;padding:0;min-width:180px;height:170px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.3s,transform 0.3s}
+.sub-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 20px}
+.sub-nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;padding:0;min-width:0;height:170px;overflow:hidden;border:2px solid rgba(196,98,45,0.5);border-radius:6px;transition:border-color 0.3s,transform 0.3s}
 .sub-nav a .card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 0.6s ease,filter 0.3s;z-index:0;filter:brightness(0.35)}
 .sub-nav a:hover .card-bg{transform:scale(1.08);filter:brightness(0.5)}
-.sub-nav a:hover{border-color:rgba(196,98,45,0.6);transform:translateY(-3px)}
-.sub-nav a .card-text{position:relative;z-index:2;text-align:center;width:100%;padding:16px 24px}
+.sub-nav a:hover{border-color:#C4622D;transform:translateY(-3px)}
+.sub-nav a .card-text{position:relative;z-index:2;text-align:center;width:100%;padding:16px 12px}
 .sub-nav a .card-text{display:flex;flex-direction:column-reverse}
-.sub-nav a .en{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,3.5vw,36px);letter-spacing:0.08em;color:#FAF9F6;line-height:1.1;text-shadow:0 2px 16px rgba(0,0,0,0.7)}
-.sub-nav a .ja{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.14em;color:rgba(255,255,255,0.7);margin-bottom:6px;text-shadow:0 1px 8px rgba(0,0,0,0.6)}
-.back-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#faf9f6;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:4px;padding:6px 14px;min-width:72px;text-align:center;cursor:pointer;transition:background 0.2s,color 0.2s,border-color 0.2s;display:none}
+.sub-nav a .en{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,3.5vw,36px);letter-spacing:0.08em;color:#FAF9F6;line-height:1.1;text-shadow:0 2px 16px rgba(0,0,0,0.7)}
+.sub-nav a .ja{font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.06em;color:rgba(255,255,255,0.7);margin-bottom:6px;text-shadow:0 1px 8px rgba(0,0,0,0.6);white-space:nowrap}
+.back-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#fff;background:#C4622D;border:1px solid #C4622D;border-radius:4px;padding:6px 14px;min-width:72px;text-align:center;cursor:pointer;transition:background 0.2s,color 0.2s,border-color 0.2s;display:none}
 body.shop-open .back-btn{display:inline-flex}
-.back-btn:hover{background:#C4622D;border-color:#C4622D;color:#fff}
+.back-btn:hover{background:#a84e1e;border-color:#a84e1e;color:#fff}
 
 /* ── フッター類 ── */
 .sub-links{position:fixed;bottom:32px;left:0;right:0;z-index:1;display:flex;gap:12px;justify-content:center;align-items:center;animation:fu 1s 0.6s ease both}
-.sub-links a{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#faf9f6;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:4px;padding:6px 14px;min-width:72px;text-align:center;text-decoration:none;transition:background 0.2s,color 0.2s,border-color 0.2s}
-.sub-links a:hover{background:#C4622D;border-color:#C4622D;color:#fff}
+.sub-links a{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#fff;background:#C4622D;border:1px solid #C4622D;border-radius:4px;padding:6px 14px;min-width:72px;text-align:center;text-decoration:none;transition:background 0.2s,color 0.2s,border-color 0.2s}
+.sub-links a:hover{background:#a84e1e;border-color:#a84e1e;color:#fff}
 .loc-footer{position:fixed;bottom:10px;left:0;right:0;z-index:1;font-size:12px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.3);animation:fu 1s 0.8s ease both;text-align:center}
 .ig{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:1;writing-mode:vertical-rl;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-decoration:none;transition:color 0.2s;animation:fi 1s 1s ease both}
 .ig:hover{color:#C4622D}
@@ -61,11 +61,11 @@ body.shop-open .back-btn{display:inline-flex}
   .logo-wrap{width:160px}
   .gate{flex-direction:column;gap:16px}
   .gate-btn{min-width:240px;padding:24px 32px}
-  .shop-screen{padding-left:16px;padding-right:16px}
-  .sub-nav{grid-template-columns:1fr 1fr;gap:10px}
+  .sub-nav{grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
   .sub-nav a{min-width:auto;height:120px}
-  .sub-nav a .ja{font-size:10px;letter-spacing:0.08em}
-  .sub-nav a .en{font-size:clamp(20px,5vw,28px)}
+  .sub-nav a .ja{font-size:9px;letter-spacing:0.04em}
+  .sub-nav a .en{font-size:clamp(18px,4.5vw,26px)}
+  .sub-nav a .card-text{padding:10px 8px}
   .ig{display:none}
 }
 </style>
