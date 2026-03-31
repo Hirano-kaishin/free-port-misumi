@@ -26,8 +26,8 @@ img{display:block;width:100%;object-fit:cover}
 .h-menu-btn.open span{background:transparent}
 .h-menu-btn.open span::before{top:0;transform:rotate(45deg)}
 .h-menu-btn.open span::after{top:0;transform:rotate(-45deg)}
-.h-back{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:8px;transition:color 0.2s}
-.h-back:hover{color:var(--white)}
+.h-back{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:6px;transition:color 0.2s;margin-left:auto;margin-right:24px;white-space:nowrap}
+.h-back:hover{color:var(--rust)}
 
 /* PAGE HERO */
 .page-hero{height:68vh;min-height:480px;position:relative;display:flex;align-items:flex-end;overflow:hidden}
@@ -40,7 +40,7 @@ img{display:block;width:100%;object-fit:cover}
 
 /* SECTION BASE */
 .sec{padding:96px 64px}
-.sec-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;color:var(--rust);margin-bottom:14px}
+.sec-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.35em;text-transform:uppercase;color:var(--rust);margin-bottom:14px}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,68px);letter-spacing:0.04em;line-height:1;margin-bottom:24px}
 .sec-body{font-size:14px;line-height:1.95;color:rgba(255,255,255,0.6);font-weight:300;max-width:520px}
 .sec-dark{background:var(--dark)}
@@ -122,5 +122,5 @@ img{display:block;width:100%;object-fit:cover}
 /* BILINGUAL - Japanese subtitle above English */
 .ja{font-family:'Noto Sans JP',sans-serif;font-weight:300;letter-spacing:0.1em;text-transform:none;display:block;opacity:0.5;line-height:1}
 .h-nav a .ja{font-size:8px;margin-bottom:3px;opacity:0.45}
-.hero-label .ja,.sec-label .ja{font-size:9px;margin-bottom:3px;opacity:0.55}
+.hero-label .ja,.sec-label .ja{font-size:11px;margin-bottom:4px;opacity:0.55}
 .footer-col-title .ja{font-size:8px;margin-bottom:2px;letter-spacing:0.08em}

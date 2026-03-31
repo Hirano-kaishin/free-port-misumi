@@ -12,60 +12,199 @@ body{background:#0e0e0e;font-family:'Barlow Condensed',sans-serif;display:flex;f
 .bg{position:fixed;inset:0;z-index:0;background:url('https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1600&q=75') center/cover no-repeat;filter:brightness(0.30) saturate(0.8)}
 .grain{position:fixed;inset:0;z-index:0;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");pointer-events:none}
 .inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+
+/* ── トップ画面（ロゴ+2ボタン） ── */
+.top-screen{display:flex;flex-direction:column;align-items:center;transition:opacity 0.5s,transform 0.5s}
+.top-screen.hide{opacity:0;transform:scale(0.96);pointer-events:none;position:absolute}
 .logo-wrap{width:270px;margin-bottom:6px;animation:fd 1s ease both}
 .logo-wrap svg{width:100%;height:auto}
-.tagline{font-size:10px;letter-spacing:0.38em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:52px;animation:fd 1s 0.15s ease both}
-.top-nav{display:flex;flex-direction:column;align-items:center;gap:0;animation:fu 1s 0.3s ease both}
-.top-nav a{display:block;font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.5vw,62px);letter-spacing:0.07em;color:#FAF9F6;line-height:1.1;padding:4px 28px;position:relative;transition:color 0.3s,letter-spacing 0.3s;text-decoration:none;text-align:center}
-.top-nav .ja{display:block;font-family:'Noto Sans JP',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.15em;color:rgba(255,255,255,0.38);line-height:1;margin-bottom:2px;text-transform:none;text-align:center}
-.top-nav a::after{content:'';position:absolute;left:0;bottom:1px;width:0;height:1px;background:#C4622D;transition:width 0.35s}
-.top-nav a+a{border-top:1px solid rgba(255,255,255,0.05)}
-.top-nav a:hover{color:#C4622D;letter-spacing:0.11em}
-.top-nav a:hover::after{width:100%}
-.loc{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:1;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.25);animation:fu 1s 0.8s ease both;white-space:nowrap;text-align:center}
+.tagline{font-size:10px;letter-spacing:0.38em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:48px;animation:fd 1s 0.15s ease both}
+.gate{display:flex;gap:32px;animation:fu 1s 0.3s ease both}
+.gate-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;padding:32px 40px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);transition:border-color 0.3s,background 0.3s,transform 0.3s;cursor:pointer;flex:1;max-width:280px}
+.gate-btn:hover{border-color:rgba(196,98,45,0.5);background:rgba(196,98,45,0.06);transform:translateY(-4px)}
+.gate-btn .en{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,42px);letter-spacing:0.07em;color:#FAF9F6;line-height:1.1;text-align:center}
+.gate-btn .ja{font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.12em;color:rgba(255,255,255,0.4);margin-top:6px}
+.gate-btn .loc{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.2em;color:#C4622D;margin-top:10px;text-transform:uppercase}
+
+/* ── SHOPサブメニュー画面 ── */
+.shop-screen{display:flex;flex-direction:column;align-items:center;opacity:0;transform:scale(1.04);pointer-events:none;position:absolute;transition:opacity 0.5s 0.15s,transform 0.5s 0.15s}
+.shop-screen.show{opacity:1;transform:scale(1);pointer-events:auto;position:relative}
+.shop-logo{width:160px;margin-bottom:8px;opacity:0.6}
+.shop-logo svg{width:100%;height:auto}
+.sub-heading{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,3vw,28px);letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:28px}
+.sub-nav{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sub-nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;padding:0;min-width:180px;height:170px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);transition:border-color 0.3s,transform 0.3s}
+.sub-nav a .card-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 0.6s ease,filter 0.3s;z-index:0;filter:brightness(0.35)}
+.sub-nav a:hover .card-bg{transform:scale(1.08);filter:brightness(0.5)}
+.sub-nav a:hover{border-color:rgba(196,98,45,0.6);transform:translateY(-3px)}
+.sub-nav a .card-text{position:relative;z-index:2;text-align:center;width:100%;padding:16px 24px}
+.sub-nav a .card-text{display:flex;flex-direction:column-reverse}
+.sub-nav a .en{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,3.5vw,36px);letter-spacing:0.08em;color:#FAF9F6;line-height:1.1;text-shadow:0 2px 16px rgba(0,0,0,0.7)}
+.sub-nav a .ja{font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.14em;color:rgba(255,255,255,0.7);margin-bottom:6px;text-shadow:0 1px 8px rgba(0,0,0,0.6)}
+.back-btn{margin-top:28px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);background:none;border:none;cursor:pointer;transition:color 0.2s;padding:8px 16px}
+.back-btn:hover{color:#C4622D}
+
+/* ── フッター類 ── */
+.sub-links{position:fixed;bottom:56px;left:0;right:0;z-index:1;display:flex;gap:24px;justify-content:center;align-items:center;animation:fu 1s 0.6s ease both}
+.sub-links a{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s}
+.sub-links a:hover{color:#C4622D}
+.loc-footer{position:fixed;bottom:28px;left:0;right:0;z-index:1;font-size:12px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.3);animation:fu 1s 0.8s ease both;text-align:center}
 .ig{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:1;writing-mode:vertical-rl;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.25);text-decoration:none;transition:color 0.2s;animation:fi 1s 1s ease both}
 .ig:hover{color:#C4622D}
+
 @keyframes fd{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes fi{from{opacity:0}to{opacity:1}}
-@media(max-width:500px){.logo-wrap{width:160px}.top-nav a{font-size:36px;padding:2px 16px}.ig{display:none}}
+
+@media(max-width:600px){
+  .logo-wrap{width:160px}
+  .gate{flex-direction:column;gap:16px}
+  .gate-btn{min-width:240px;padding:24px 32px}
+  .sub-nav{grid-template-columns:1fr 1fr;gap:10px}
+  .sub-nav a{min-width:auto;height:120px}
+  .ig{display:none}
+}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <div class="grain"></div>
 <main class="inner">
-  <div class="logo-wrap">
-    <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" fill="none">
-      <g stroke="#FAF9F6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="52" y1="105" x2="268" y2="105"/>
-        <path d="M52,105 Q160,15 268,105"/>
-        <path d="M84,105 Q160,38 236,105"/>
-        <path d="M160,105 L160,17"/>
-        <path d="M52,105 L160,63 L268,105"/>
-        <path d="M84,105 L160,42 L236,105"/>
-        <path d="M52,105 L119,80 L160,105"/>
-        <path d="M268,105 L201,80 L160,105"/>
-        <path d="M119,80 L160,63 L201,80"/>
-        <path d="M119,80 L84,105"/><path d="M201,80 L236,105"/>
-        <path d="M38,116 Q64,109 90,116 Q116,123 142,116 Q168,109 194,116 Q220,123 246,116 Q272,109 284,113" stroke-width="1.2"/>
-        <path d="M38,124 Q64,117 90,124 Q116,131 142,124 Q168,117 194,124 Q220,131 246,124 Q272,117 284,121" stroke-width="1.2"/>
-      </g>
-      <circle cx="228" cy="38" r="17" stroke="#C4622D" stroke-width="2.2"/>
-      <text x="160" y="172" font-family="'Bebas Neue',sans-serif" font-size="60" fill="#FAF9F6" text-anchor="middle" letter-spacing="3">FREE PORT</text>
-      <text x="160" y="192" font-family="'Barlow Condensed',sans-serif" font-size="14" fill="rgba(255,255,255,0.4)" text-anchor="middle" letter-spacing="5">CAMP GEAR &amp; COFFEE</text>
-    </svg>
+
+  <!-- ★ トップ画面: ロゴ + 2ボタン ── まとめて切り替え -->
+  <div class="top-screen" id="topScreen">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <g stroke="#FAF9F6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="52" y1="105" x2="268" y2="105"/>
+          <path d="M52,105 Q160,15 268,105"/><path d="M84,105 Q160,38 236,105"/>
+          <path d="M160,105 L160,17"/>
+          <path d="M52,105 L160,63 L268,105"/><path d="M84,105 L160,42 L236,105"/>
+          <path d="M52,105 L119,80 L160,105"/><path d="M268,105 L201,80 L160,105"/>
+          <path d="M119,80 L160,63 L201,80"/>
+          <path d="M119,80 L84,105"/><path d="M201,80 L236,105"/>
+          <path d="M38,116 Q64,109 90,116 Q116,123 142,116 Q168,109 194,116 Q220,123 246,116 Q272,109 284,113" stroke-width="1.2"/>
+          <path d="M38,124 Q64,117 90,124 Q116,131 142,124 Q168,117 194,124 Q220,131 246,124 Q272,117 284,121" stroke-width="1.2"/>
+        </g>
+        <circle cx="228" cy="38" r="17" stroke="#C4622D" stroke-width="2.2"/>
+        <text x="160" y="172" font-family="'Bebas Neue',sans-serif" font-size="60" fill="#FAF9F6" text-anchor="middle" letter-spacing="3">FREE PORT</text>
+        <text x="160" y="192" font-family="'Barlow Condensed',sans-serif" font-size="14" fill="rgba(255,255,255,0.4)" text-anchor="middle" letter-spacing="5">CAMP GEAR &amp; COFFEE</text>
+      </svg>
+    </div>
+    <p class="tagline">&#19977;&#35282;&#35199;&#28207; &middot; Kumamoto &middot; Est. 2026</p>
+    <div class="gate">
+      <button class="gate-btn" id="shopBtn" type="button">
+        <span class="en">SHOP</span>
+        <span class="ja">コーヒー・ギア・雑貨</span>
+        <span class="loc">Misumi &mdash; &#19977;&#35282;</span>
+      </button>
+      <a class="gate-btn" href="camp.html">
+        <span class="en">CAMP &amp; SAUNA</span>
+        <span class="ja">キャンプ・サウナ・カヤック</span>
+        <span class="loc">Amakusa &mdash; &#22825;&#33609;</span>
+      </a>
+    </div>
   </div>
-  <p class="tagline">&#19977;&#35282;&#35199;&#28207; &middot; Kumamoto &middot; Est. 2026</p>
-  <nav class="top-nav">
-    <a href="about.html"><span class="ja">私たちについて</span>About</a>
-    <a href="coffee.html"><span class="ja">コーヒー</span>Coffee</a>
-    <a href="shop.html"><span class="ja">キャンプギア・オリジナルグッズ</span>Shop</a>
-    <a href="camp.html"><span class="ja">キャンプ・サウナ</span>Camp &amp; Sauna</a>
-    <a href="access.html"><span class="ja">アクセス</span>Access</a>
-  </nav>
+
+  <!-- ★ SHOP画面: ロゴ小 + サブメニュー ── 完全に差し替わる -->
+  <div class="shop-screen" id="shopScreen">
+    <div class="shop-logo">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <g stroke="#FAF9F6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="52" y1="105" x2="268" y2="105"/>
+          <path d="M52,105 Q160,15 268,105"/><path d="M84,105 Q160,38 236,105"/>
+          <path d="M160,105 L160,17"/>
+          <path d="M52,105 L160,63 L268,105"/><path d="M84,105 L160,42 L236,105"/>
+          <path d="M52,105 L119,80 L160,105"/><path d="M268,105 L201,80 L160,105"/>
+          <path d="M119,80 L160,63 L201,80"/>
+          <path d="M119,80 L84,105"/><path d="M201,80 L236,105"/>
+          <path d="M38,116 Q64,109 90,116 Q116,123 142,116 Q168,109 194,116 Q220,123 246,116 Q272,109 284,113" stroke-width="1.2"/>
+          <path d="M38,124 Q64,117 90,124 Q116,131 142,124 Q168,117 194,124 Q220,131 246,124 Q272,117 284,121" stroke-width="1.2"/>
+        </g>
+        <circle cx="228" cy="38" r="17" stroke="#C4622D" stroke-width="2.2"/>
+        <text x="160" y="172" font-family="'Bebas Neue',sans-serif" font-size="60" fill="#FAF9F6" text-anchor="middle" letter-spacing="3">FREE PORT</text>
+      </svg>
+    </div>
+    <div class="sub-heading">SHOP</div>
+    <nav class="sub-nav">
+      <a href="coffee.html">
+        <span class="card-bg" style="background-image:url('images/coffee-machine.jpg')"></span>
+        <span class="card-text"><span class="en">Coffee</span><span class="ja">コーヒー</span></span>
+      </a>
+      <a href="gear.html">
+        <span class="card-bg" style="background-image:url('images/shop-gear1.jpg');background-position:center 65%"></span>
+        <span class="card-text"><span class="en">Camp Gear</span><span class="ja">キャンプギア</span></span>
+      </a>
+      <a href="goods.html">
+        <span class="card-bg" style="background-image:url('images/Gemini_Generated_Image_inpamkinpamkinpa.jpg')"></span>
+        <span class="card-text"><span class="en">Original Goods</span><span class="ja">オリジナルグッズ</span></span>
+      </a>
+      <a href="furniture.html">
+        <span class="card-bg" style="background-image:url('images/furniture-sofa.jpg')"></span>
+        <span class="card-text"><span class="en">Furniture</span><span class="ja">雑貨・家具</span></span>
+      </a>
+    </nav>
+    <button class="back-btn" id="backBtn" type="button">&larr; Back</button>
+  </div>
+
 </main>
+
+<div class="sub-links">
+  <a href="about.html">About</a>
+  <a href="access.html">Access</a>
+</div>
+<span class="loc-footer" id="locFooter">&#19977;&#35282;&#35199;&#28207; &middot; &#22825;&#33609;</span>
 <a class="ig" href="https://www.instagram.com/freeport.misumi/" target="_blank" rel="noopener">Instagram</a>
-<a class="ig" href="https://share-me.design/TOKIO" target="_blank" rel="noopener" style="margin-left:16px">Owner Profile</a>
+
+<script>
+(function(){
+  var top = document.getElementById('topScreen');
+  var shop = document.getElementById('shopScreen');
+  var shopBtn = document.getElementById('shopBtn');
+  var backBtn = document.getElementById('backBtn');
+  var locFooter = document.getElementById('locFooter');
+
+  function setLoc(isShop){
+    locFooter.textContent = isShop ? '三角西港' : '三角西港 · 天草';
+  }
+
+  function showShop(){
+    top.classList.add('hide');
+    setTimeout(function(){ shop.classList.add('show'); }, 300);
+    setLoc(true);
+  }
+  function showTop(){
+    shop.classList.remove('show');
+    setTimeout(function(){ top.classList.remove('hide'); }, 300);
+    setLoc(false);
+  }
+
+  shopBtn.addEventListener('click', function(){
+    showShop();
+    history.pushState(null, '', '#shop');
+  });
+
+  backBtn.addEventListener('click', function(){
+    showTop();
+    history.pushState(null, '', location.pathname);
+  });
+
+  // ページ読み込み時に #shop があればSHOP画面を表示
+  if(location.hash === '#shop'){
+    top.classList.add('hide');
+    shop.classList.add('show');
+    setLoc(true);
+  }
+
+  // ブラウザの戻る/進むに対応
+  window.addEventListener('popstate', function(){
+    if(location.hash === '#shop'){
+      showShop();
+    } else {
+      showTop();
+    }
+  });
+})();
+</script>
 </body>
 </html>
