@@ -28,6 +28,9 @@ img{display:block;width:100%;object-fit:cover}
 .h-menu-btn.open span::after{top:0;transform:rotate(-45deg)}
 .h-back{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:6px;transition:color 0.2s;margin-left:auto;margin-right:24px;white-space:nowrap}
 .h-back:hover{color:var(--rust)}
+.h-back-group{display:flex;align-items:center;gap:8px;margin-left:auto;margin-right:24px}
+.h-back-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#faf9f6;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:4px;padding:6px 14px;min-width:72px;text-align:center;justify-content:center;white-space:nowrap;transition:background 0.2s,color 0.2s,border-color 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.h-back-btn:hover{background:var(--rust);border-color:var(--rust);color:#fff}
 
 /* PAGE HERO */
 .page-hero{height:68vh;min-height:480px;position:relative;display:flex;align-items:flex-end;overflow:hidden}
