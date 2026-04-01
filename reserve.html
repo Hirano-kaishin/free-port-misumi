@@ -293,6 +293,7 @@
     btn.textContent = '送信中...';
     fetch(GAS_URL, {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify({
         date: date, guests: n, plan: planLabel,
         options: optList.join(', '), total: totalPrice.textContent,
