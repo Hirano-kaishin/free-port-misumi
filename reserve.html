@@ -1,3 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link rel="stylesheet" href="css/shared.css">
+<title>予約 &mdash; FREE PORT</title>
+<style>
+.rsv-form{max-width:680px;margin:0 auto}
+.rsv-group{margin-bottom:36px}
+.rsv-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.25em;text-transform:uppercase;color:var(--rust);margin-bottom:10px;display:block}
+.rsv-label .ja{font-size:9px;margin-bottom:2px}
+.rsv-input{width:100%;padding:14px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#faf9f6;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:300;outline:none;transition:border-color 0.2s}
+.rsv-input:focus{border-color:var(--rust)}
+.rsv-input::placeholder{color:rgba(255,255,255,0.25)}
+.rsv-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.plan-card{border:1px solid rgba(255,255,255,0.12);padding:24px;cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative}
+.plan-card:hover{border-color:rgba(196,98,45,0.4)}
+.plan-card.selected{border-color:var(--rust);background:rgba(196,98,45,0.06)}
+.plan-card input{position:absolute;opacity:0;pointer-events:none}
+.plan-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;color:#faf9f6;margin-bottom:4px}
+.plan-desc{font-size:12px;color:rgba(255,255,255,0.4);font-weight:300;line-height:1.6;margin-bottom:12px}
+.plan-price{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--rust);letter-spacing:0.04em}
+.plan-price span{font-size:12px;color:rgba(255,255,255,0.35);margin-left:2px}
+
+.opt-table{width:100%;border-collapse:collapse}
+.opt-table tr{border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background 0.15s}
+.opt-table tr:hover{background:rgba(255,255,255,0.02)}
+.opt-table tr.checked{background:rgba(196,98,45,0.05)}
+.opt-table td{padding:14px 0;font-size:13px;color:rgba(255,255,255,0.55);font-weight:300;vertical-align:middle}
+.opt-table td:first-child{width:36px}
+.opt-table td:last-child{text-align:right;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em;white-space:nowrap}
+.opt-check{width:18px;height:18px;border:1px solid rgba(255,255,255,0.2);background:none;appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;vertical-align:middle;transition:border-color 0.2s,background 0.2s}
+.opt-check:checked{background:var(--rust);border-color:var(--rust)}
+.opt-check:checked::after{content:'';position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.opt-qty{width:48px;padding:6px 4px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#faf9f6;font-family:'Noto Sans JP',sans-serif;font-size:13px;text-align:center;outline:none;transition:border-color 0.2s}
+.opt-qty:focus{border-color:var(--rust)}
+
+.total-bar{position:sticky;bottom:0;background:rgba(14,14,14,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.08);padding:20px 0;margin-top:48px;z-index:10}
+.total-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:0 20px}
+.total-amount{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--rust);letter-spacing:0.04em}
+.total-amount small{font-size:14px;color:rgba(255,255,255,0.4);margin-right:8px}
+.total-detail{font-size:12px;color:rgba(255,255,255,0.35);font-weight:300}
+
+.rsv-submit{display:inline-flex;align-items:center;gap:14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:0.2em;text-transform:uppercase;background:var(--rust);color:#faf9f6;border:2px solid var(--rust);padding:16px 40px;cursor:pointer;transition:all 0.3s}
+.rsv-submit:hover{background:transparent;color:var(--rust)}
+
+@media(max-width:768px){
+  .rsv-row{grid-template-columns:1fr}
+  .total-amount{font-size:32px}
+  .rsv-submit{width:100%;justify-content:center}
+}
+</style>
+</head><body>
+<header class="site-header"><a href="index.html" class="h-logo"><div class="h-logo-svg" style="color:#FAF9F6;width:38px"><svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg" fill="none"><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="52" y1="105" x2="268" y2="105"/><path d="M52,105 Q160,15 268,105"/><path d="M84,105 Q160,38 236,105"/><path d="M160,105 L160,17"/><path d="M52,105 L160,63 L268,105"/><path d="M84,105 L160,42 L236,105"/><path d="M52,105 L119,80 L160,105"/><path d="M268,105 L201,80 L160,105"/><path d="M119,80 L160,63 L201,80"/><path d="M119,80 L84,105"/><path d="M201,80 L236,105"/><path d="M38,116 Q64,109 90,116 Q116,123 142,116 Q168,109 194,116 Q220,123 246,116 Q272,109 284,113" stroke-width="1.2"/><path d="M38,124 Q64,117 90,124 Q116,131 142,124 Q168,117 194,124 Q220,131 246,124 Q272,117 284,121" stroke-width="1.2"/></g><circle cx="228" cy="38" r="17" stroke="#C4622D" stroke-width="2.2"/></svg></div><span class="h-logo-txt">FREE<span>PORT</span></span></a><div class="h-back-group"><a href="index.html" class="h-back-btn">HOME</a><a href="javascript:history.back()" class="h-back-btn">← BACK</a></div><nav><ul class="h-nav"><li><a href="coffee.html"><span class="ja">コーヒー</span>Coffee</a></li><li><a href="gear.html"><span class="ja">ギア</span>Gear</a></li><li><a href="goods.html"><span class="ja">オーダーメイドグッズ</span>Goods</a></li><li><a href="furniture.html"><span class="ja">雑貨・家具</span>Furniture</a></li><li><a href="camp.html"><span class="ja">キャンプ・サウナ</span>Camp &amp; Sauna</a></li><li><a href="about.html"><span class="ja">私たちについて</span>About</a></li><li><a href="access.html"><span class="ja">アクセス</span>Access</a></li></ul></nav><button class="h-menu-btn" aria-label="メニュー"><span></span></button></header>
+
+<section class="sec sec-dark" style="padding-top:120px;padding-bottom:40px">
+<div class="rsv-form">
+    <div style="text-align:center;margin-bottom:56px">
+        <p class="sec-label"><span class="ja">ご予約</span>Reservation</p>
+        <h2 class="sec-title" style="color:#faf9f6">予約フォーム</h2>
+    </div>
+
+    <!-- DATE & GUESTS -->
+    <div class="rsv-row" style="margin-bottom:36px">
+        <div class="rsv-group" style="margin-bottom:0">
+            <label class="rsv-label"><span class="ja">宿泊日</span>Date</label>
+            <input type="date" class="rsv-input" id="rsvDate">
+        </div>
+        <div class="rsv-group" style="margin-bottom:0">
+            <label class="rsv-label"><span class="ja">人数</span>Guests</label>
+            <select class="rsv-input" id="rsvGuests">
+                <option value="1">1名</option>
+                <option value="2" selected>2名</option>
+                <option value="3">3名</option>
+                <option value="4">4名</option>
+                <option value="5">5名</option>
+                <option value="6">6名</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- PLAN SELECT -->
+    <div class="rsv-group">
+        <label class="rsv-label"><span class="ja">プラン選択</span>Plan</label>
+        <div class="rsv-row">
+            <label class="plan-card selected" id="planNormal">
+                <input type="radio" name="plan" value="normal" checked>
+                <div class="plan-name">CAMP STAY</div>
+                <div class="plan-desc">キャンプ宿泊（サウナ付き）<br>ギア持ち込みOK</div>
+                <div class="plan-price">¥5,000<span>/人</span></div>
+            </label>
+            <label class="plan-card" id="planOmakase">
+                <input type="radio" name="plan" value="omakase">
+                <div class="plan-name">OMAKASE PLAN</div>
+                <div class="plan-desc">設営〜撤収すべてお任せ<br>全レンタル・サウナ込み</div>
+                <div class="plan-price">¥15,000<span>/人</span></div>
+            </label>
+        </div>
+    </div>
+
+    <!-- RENTAL OPTIONS -->
+    <div class="rsv-group" id="rentalSection">
+        <label class="rsv-label"><span class="ja">レンタルオプション</span>Rental Options</label>
+        <table class="opt-table">
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="3000" data-name="テント"></td>
+                <td>テント</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="5"></td>
+                <td>¥3,000</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="1000" data-name="寝袋"></td>
+                <td>寝袋</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="10"></td>
+                <td>¥1,000</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="2000" data-name="たき火台セット"></td>
+                <td>たき火台セット</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="3"></td>
+                <td>¥2,000</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="1000" data-name="テーブル＆チェアセット"></td>
+                <td>テーブル＆チェアセット</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="3"></td>
+                <td>¥1,000</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="500" data-name="ランタン"></td>
+                <td>ランタン</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="5"></td>
+                <td>¥500</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="2500" data-name="BBQグリルセット"></td>
+                <td>BBQグリルセット</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="3"></td>
+                <td>¥2,500</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="opt-check" data-price="5000" data-name="カヤック"></td>
+                <td>カヤック（時間無制限）</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty" value="1" min="1" max="6"></td>
+                <td>¥5,000</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- NAME & CONTACT -->
+    <div class="rsv-group">
+        <label class="rsv-label"><span class="ja">お名前</span>Name</label>
+        <input type="text" class="rsv-input" id="rsvName" placeholder="山田 太郎">
+    </div>
+    <div class="rsv-row">
+        <div class="rsv-group">
+            <label class="rsv-label"><span class="ja">メールアドレス</span>Email</label>
+            <input type="email" class="rsv-input" id="rsvEmail" placeholder="example@mail.com">
+        </div>
+        <div class="rsv-group">
+            <label class="rsv-label"><span class="ja">電話番号</span>Phone</label>
+            <input type="tel" class="rsv-input" id="rsvPhone" placeholder="090-1234-5678">
+        </div>
+    </div>
+    <div class="rsv-group">
+        <label class="rsv-label"><span class="ja">備考</span>Notes</label>
+        <textarea class="rsv-input" id="rsvNotes" rows="3" placeholder="ご要望やご質問があればご記入ください" style="resize:vertical"></textarea>
+    </div>
+</div>
+</section>
+
+<!-- TOTAL BAR -->
+<div class="total-bar">
+    <div class="total-inner">
+        <div>
+            <div class="total-detail" id="totalDetail">CAMP STAY × 2名</div>
+            <div class="total-amount"><small>合計</small><span id="totalPrice">¥10,000</span></div>
+        </div>
+        <button type="button" class="rsv-submit" id="submitBtn">予約を送信 &rarr;</button>
+    </div>
+</div>
+
+<footer class="site-footer"><div class="footer-inner"><div><div class="footer-brand">FREE<span>PORT</span></div><div class="footer-sub">Camp Gear &amp; Coffee</div><div class="footer-addr">〒869-3207<br>熊本県宇城市三角町三角浦1337-11</div></div><div><div class="footer-col-title"><span class="ja">SNS・お問い合わせ</span>Connect</div><ul class="footer-links"><li><a href="https://www.instagram.com/freeport.misumi/" target="_blank" style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>Instagram</a></li><li><a href="mailto:milspec.cps@gmail.com" style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>milspec.cps@gmail.com</a></li></ul></div></div><div class="footer-bottom"><span class="footer-copy">&copy; 2025 FREE PORT.</span></div></footer>
+
+<script src="js/shared.js"></script>
+<script>
+(function(){
+  var guests = document.getElementById('rsvGuests');
+  var planCards = document.querySelectorAll('.plan-card');
+  var planInputs = document.querySelectorAll('input[name="plan"]');
+  var checks = document.querySelectorAll('.opt-check');
+  var rentalSection = document.getElementById('rentalSection');
+  var totalPrice = document.getElementById('totalPrice');
+  var totalDetail = document.getElementById('totalDetail');
+  var dateInput = document.getElementById('rsvDate');
+
+  // Set min date to tomorrow
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  dateInput.min = tomorrow.toISOString().split('T')[0];
+
+  function getSelectedPlan(){
+    var checked = document.querySelector('input[name="plan"]:checked');
+    return checked ? checked.value : 'normal';
+  }
+
+  function calcTotal(){
+    var plan = getSelectedPlan();
+    var n = parseInt(guests.value) || 1;
+    var base = plan === 'omakase' ? 15000 : 5000;
+    var planLabel = plan === 'omakase' ? 'OMAKASE PLAN' : 'CAMP STAY';
+    var subtotal = base * n;
+    var optLines = [];
+
+    if(plan !== 'omakase'){
+      checks.forEach(function(cb){
+        if(cb.checked){
+          var price = parseInt(cb.dataset.price);
+          var qty = parseInt(cb.closest('tr').querySelector('.opt-qty').value) || 1;
+          subtotal += price * qty;
+          optLines.push(cb.dataset.name + ' x' + qty);
+        }
+      });
+    }
+
+    totalPrice.textContent = '¥' + subtotal.toLocaleString();
+    var detail = planLabel + ' x ' + n + '名';
+    if(optLines.length) detail += ' + ' + optLines.join(', ');
+    totalDetail.textContent = detail;
+  }
+
+  // Plan card selection
+  planCards.forEach(function(card){
+    card.addEventListener('click', function(){
+      planCards.forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      card.querySelector('input').checked = true;
+
+      // Hide rental options for omakase
+      if(getSelectedPlan() === 'omakase'){
+        rentalSection.style.opacity = '0.3';
+        rentalSection.style.pointerEvents = 'none';
+        checks.forEach(function(cb){ cb.checked = false; cb.closest('tr').classList.remove('checked'); });
+      } else {
+        rentalSection.style.opacity = '1';
+        rentalSection.style.pointerEvents = 'auto';
+      }
+      calcTotal();
+    });
+  });
+
+  // Checkbox row highlight
+  checks.forEach(function(cb){
+    cb.addEventListener('change', function(){
+      cb.closest('tr').classList.toggle('checked', cb.checked);
+      calcTotal();
+    });
+  });
+
+  // Qty change
+  document.querySelectorAll('.opt-qty').forEach(function(qty){
+    qty.addEventListener('input', calcTotal);
+  });
+
+  guests.addEventListener('change', calcTotal);
+
+  // Submit
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    var date = dateInput.value;
     var name = document.getElementById('rsvName').value.trim();
     var email = document.getElementById('rsvEmail').value.trim();
     var phone = document.getElementById('rsvPhone').value.trim();
@@ -5,11 +272,9 @@
     var n = guests.value;
     var plan = getSelectedPlan();
 
-
     if(!date){ alert('宿泊日を選択してください'); return; }
     if(!name){ alert('お名前を入力してください'); return; }
     if(!email && !phone){ alert('メールアドレスまたは電話番号を入力してください'); return; }
-
 
     var planLabel = plan === 'omakase' ? 'おまかせプラン' : 'キャンプ宿泊（サウナ付き）';
     var optList = [];
@@ -17,28 +282,10 @@
       checks.forEach(function(cb){
         if(cb.checked){
           var qty = cb.closest('tr').querySelector('.opt-qty').value;
-          optList.push(cb.dataset.name + ' ×' + qty);
+          optList.push(cb.dataset.name + ' x' + qty);
         }
       });
     }
-
-
-    var subject = encodeURIComponent('キャンプ予約 ' + date + ' ' + name);
-    var body = [
-      '【キャンプ予約】',
-      '',
-      '宿泊日: ' + date,
-      '人数: ' + n + '名',
-      'プラン: ' + planLabel,
-      optList.length ? 'オプション: ' + optList.join(', ') : '',
-      '合計: ' + totalPrice.textContent,
-      '',
-      'お名前: ' + name,
-      'メール: ' + email,
-      '電話: ' + phone,
-      notes ? '備考: ' + notes : ''
-    ].filter(Boolean).join('\n');
-
 
     var GAS_URL = 'https://script.google.com/macros/s/AKfycbyClKNCA5ABWMG3DswTJdQOUFiYwj5udrbhtJRL-nAdwY_AuV1k4CHacMMdpR_tL1FQ/exec';
     var btn = document.getElementById('submitBtn');
@@ -52,13 +299,11 @@
         name: name, email: email, phone: phone, notes: notes
       })
     })
-    .then(function(){ alert('予約を受け付けました。確認メールをご確認ください。'); btn.textContent = '送信完了 ✓'; })
+    .then(function(){ alert('予約を受け付けました。確認メールをご確認ください。'); btn.textContent = '送信完了'; })
     .catch(function(){ alert('送信に失敗しました。お手数ですがメールにてご連絡ください。'); btn.disabled = false; btn.textContent = '予約を送信 →'; });
   });
-
 
   calcTotal();
 })();
 </script>
 </body></html>
-
