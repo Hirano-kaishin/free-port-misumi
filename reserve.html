@@ -299,7 +299,9 @@
         name: name, email: email, phone: phone, notes: notes
       })
     })
-    .then(function(){ alert('予約を受け付けました。確認メールをご確認ください。'); btn.textContent = '送信完了'; })
+    .then(function(){
+      document.body.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0e0e;padding:20px"><div style="text-align:center;max-width:560px"><p style="font-family:Barlow Condensed,sans-serif;font-size:14px;letter-spacing:0.25em;text-transform:uppercase;color:#C4622D;margin-bottom:16px">Reservation Confirmed</p><h2 style="font-family:Bebas Neue,sans-serif;font-size:36px;color:#faf9f6;letter-spacing:0.04em;margin-bottom:24px">ご予約ありがとうございます</h2><p style="font-size:14px;color:rgba(255,255,255,0.55);font-weight:300;line-height:1.8;margin-bottom:48px">ご記載いただいたメールアドレスに<br>ご予約情報をお送りしました。<br>ご確認くださいませ。</p><a href="index.html" style="display:inline-block;font-family:Barlow Condensed,sans-serif;font-size:15px;letter-spacing:0.2em;text-transform:uppercase;background:#C4622D;color:#faf9f6;border:2px solid #C4622D;padding:16px 48px;text-decoration:none;transition:all 0.3s">HOME</a></div></div>';
+    })
     .catch(function(){ alert('送信に失敗しました。お手数ですがメールにてご連絡ください。'); btn.disabled = false; btn.textContent = '予約を送信 →'; });
   });
 
