@@ -44,6 +44,7 @@
 
 @media(max-width:768px){
   .rsv-row{grid-template-columns:1fr}
+  .plan-card .plan-price{font-size:20px}
   .total-amount{font-size:32px}
   .rsv-submit{width:100%;justify-content:center}
 }
@@ -61,7 +62,7 @@
     <!-- DATE & GUESTS -->
     <div class="rsv-row" style="margin-bottom:36px">
         <div class="rsv-group" style="margin-bottom:0">
-            <label class="rsv-label"><span class="ja">宿泊日</span>Date</label>
+            <label class="rsv-label"><span class="ja">ご利用日</span>Date</label>
             <input type="date" class="rsv-input" id="rsvDate">
         </div>
         <div class="rsv-group" style="margin-bottom:0">
@@ -80,20 +81,45 @@
     <!-- PLAN SELECT -->
     <div class="rsv-group">
         <label class="rsv-label"><span class="ja">プラン選択</span>Plan</label>
-        <div class="rsv-row">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
             <label class="plan-card selected" id="planNormal">
                 <input type="radio" name="plan" value="normal" checked>
                 <div class="plan-name">CAMP STAY</div>
-                <div class="plan-desc">キャンプ宿泊（サウナ付き）<br>ギア持ち込みOK</div>
-                <div class="plan-price">¥5,000<span>/人</span></div>
+                <div class="plan-desc">キャンプ宿泊<br>ギア持ち込みOK</div>
+                <div class="plan-price">1人あたり5,000円</div>
+            </label>
+            <label class="plan-card" id="planDay">
+                <input type="radio" name="plan" value="daycamp">
+                <div class="plan-name">DAY CAMP</div>
+                <div class="plan-desc">デイキャンプ<br>12:00〜18:00</div>
+                <div class="plan-price">1人あたり2,000円</div>
             </label>
             <label class="plan-card" id="planOmakase">
                 <input type="radio" name="plan" value="omakase">
                 <div class="plan-name">OMAKASE PLAN</div>
-                <div class="plan-desc">設営〜撤収すべてお任せ<br>全レンタル・サウナ込み</div>
-                <div class="plan-price">¥15,000<span>/人</span></div>
+                <div class="plan-desc">設営〜撤収すべてお任せ<br>全レンタル込み</div>
+                <div class="plan-price">1人あたり20,000円</div>
             </label>
         </div>
+    </div>
+
+    <!-- SAUNA OPTION -->
+    <div class="rsv-group" id="saunaSection">
+        <label class="rsv-label"><span class="ja">バレルサウナ（貸切・3時間）</span>Barrel Sauna</label>
+        <table class="opt-table">
+            <tr>
+                <td><input type="checkbox" class="sauna-check" id="saunaCheck" data-price="3000" data-name="バレルサウナ"></td>
+                <td>バレルサウナ（2名から受付 / 4名以上で1人2,500円）</td>
+                <td style="text-align:center;width:80px"></td>
+                <td>1人3,000円</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="sauna-check" id="ponchoCheck" data-price="500" data-name="ポンチョ＆ハット"></td>
+                <td>オリジナルポンチョ＆ハット レンタル</td>
+                <td style="text-align:center;width:80px"><input type="number" class="opt-qty sauna-qty" value="1" min="1" max="10"></td>
+                <td>500円</td>
+            </tr>
+        </table>
     </div>
 
     <!-- RENTAL OPTIONS -->
@@ -173,14 +199,14 @@
 (function(){
   var guests = document.getElementById('rsvGuests');
   var planCards = document.querySelectorAll('.plan-card');
-  var planInputs = document.querySelectorAll('input[name="plan"]');
   var checks = document.querySelectorAll('.opt-check');
+  var saunaChecks = document.querySelectorAll('.sauna-check');
   var rentalSection = document.getElementById('rentalSection');
+  var saunaSection = document.getElementById('saunaSection');
   var totalPrice = document.getElementById('totalPrice');
   var totalDetail = document.getElementById('totalDetail');
   var dateInput = document.getElementById('rsvDate');
 
-  // Set min date to tomorrow
   var tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   dateInput.min = tomorrow.toISOString().split('T')[0];
@@ -193,12 +219,29 @@
   function calcTotal(){
     var plan = getSelectedPlan();
     var n = parseInt(guests.value) || 1;
-    var base = plan === 'omakase' ? 15000 : 5000;
-    var planLabel = plan === 'omakase' ? 'OMAKASE PLAN' : 'CAMP STAY';
+    var base, planLabel;
+    if(plan === 'omakase'){ base = 20000; planLabel = 'OMAKASE PLAN'; }
+    else if(plan === 'daycamp'){ base = 2000; planLabel = 'DAY CAMP'; }
+    else { base = 5000; planLabel = 'CAMP STAY'; }
+
     var subtotal = base * n;
     var optLines = [];
 
+    // Sauna calculation (not for omakase)
     if(plan !== 'omakase'){
+      var saunaCheck = document.getElementById('saunaCheck');
+      if(saunaCheck && saunaCheck.checked){
+        var saunaPrice = n >= 4 ? 2500 : 3000;
+        subtotal += saunaPrice * n;
+        optLines.push('バレルサウナ(' + (n >= 4 ? '2,500' : '3,000') + '円 x ' + n + '名)');
+      }
+      var ponchoCheck = document.getElementById('ponchoCheck');
+      if(ponchoCheck && ponchoCheck.checked){
+        var ponchoQty = parseInt(ponchoCheck.closest('tr').querySelector('.sauna-qty').value) || 1;
+        subtotal += 500 * ponchoQty;
+        optLines.push('ポンチョ＆ハット x' + ponchoQty);
+      }
+
       checks.forEach(function(cb){
         if(cb.checked){
           var price = parseInt(cb.dataset.price);
@@ -215,42 +258,48 @@
     totalDetail.textContent = detail;
   }
 
-  // Plan card selection
   planCards.forEach(function(card){
     card.addEventListener('click', function(){
       planCards.forEach(function(c){ c.classList.remove('selected'); });
       card.classList.add('selected');
       card.querySelector('input').checked = true;
 
-      // Hide rental options for omakase
       if(getSelectedPlan() === 'omakase'){
         rentalSection.style.opacity = '0.3';
         rentalSection.style.pointerEvents = 'none';
+        saunaSection.style.opacity = '0.3';
+        saunaSection.style.pointerEvents = 'none';
         checks.forEach(function(cb){ cb.checked = false; cb.closest('tr').classList.remove('checked'); });
+        saunaChecks.forEach(function(cb){ cb.checked = false; cb.closest('tr').classList.remove('checked'); });
       } else {
         rentalSection.style.opacity = '1';
         rentalSection.style.pointerEvents = 'auto';
+        saunaSection.style.opacity = '1';
+        saunaSection.style.pointerEvents = 'auto';
       }
       calcTotal();
     });
   });
 
-  // Checkbox row highlight
   checks.forEach(function(cb){
     cb.addEventListener('change', function(){
       cb.closest('tr').classList.toggle('checked', cb.checked);
       calcTotal();
     });
   });
+  saunaChecks.forEach(function(cb){
+    cb.addEventListener('change', function(){
+      cb.closest('tr').classList.toggle('checked', cb.checked);
+      calcTotal();
+    });
+  });
 
-  // Qty change
-  document.querySelectorAll('.opt-qty').forEach(function(qty){
+  document.querySelectorAll('.opt-qty, .sauna-qty').forEach(function(qty){
     qty.addEventListener('input', calcTotal);
   });
 
   guests.addEventListener('change', calcTotal);
 
-  // Submit
   document.getElementById('submitBtn').addEventListener('click', function(){
     var date = dateInput.value;
     var name = document.getElementById('rsvName').value.trim();
@@ -260,13 +309,21 @@
     var n = guests.value;
     var plan = getSelectedPlan();
 
-    if(!date){ alert('宿泊日を選択してください'); return; }
+    if(!date){ alert('ご利用日を選択してください'); return; }
     if(!name){ alert('お名前を入力してください'); return; }
     if(!email && !phone){ alert('メールアドレスまたは電話番号を入力してください'); return; }
 
-    var planLabel = plan === 'omakase' ? 'おまかせプラン' : 'キャンプ宿泊（サウナ付き）';
+    var planLabels = { normal: 'キャンプ宿泊', daycamp: 'デイキャンプ', omakase: 'おまかせプラン' };
+    var planLabel = planLabels[plan] || 'キャンプ宿泊';
     var optList = [];
     if(plan !== 'omakase'){
+      var saunaCheck = document.getElementById('saunaCheck');
+      if(saunaCheck && saunaCheck.checked) optList.push('バレルサウナ');
+      var ponchoCheck = document.getElementById('ponchoCheck');
+      if(ponchoCheck && ponchoCheck.checked){
+        var pqty = ponchoCheck.closest('tr').querySelector('.sauna-qty').value;
+        optList.push('ポンチョ＆ハット x' + pqty);
+      }
       checks.forEach(function(cb){
         if(cb.checked){
           var qty = cb.closest('tr').querySelector('.opt-qty').value;
