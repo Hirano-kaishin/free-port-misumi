@@ -236,8 +236,34 @@
                 .rsv-row {
                     grid-template-columns: 1fr;
                 }
-                .plan-card .plan-price {
+                .plan-grid-wrap {
+                    grid-template-columns: 1fr !important;
+                }
+                .plan-card {
+                    display: grid;
+                    grid-template-columns: 1fr auto;
+                    grid-template-rows: auto auto;
+                    align-items: center;
+                    gap: 0 16px;
+                    padding: 16px 20px;
+                }
+                .plan-name {
+                    grid-column: 1;
+                    grid-row: 1;
                     font-size: 20px;
+                    margin-bottom: 0;
+                }
+                .plan-desc {
+                    grid-column: 1;
+                    grid-row: 2;
+                    margin-bottom: 0;
+                    font-size: 11px;
+                }
+                .plan-price {
+                    grid-column: 2;
+                    grid-row: 1 / 3;
+                    font-size: 20px;
+                    text-align: right;
                 }
                 .total-amount {
                     font-size: 32px;
@@ -388,6 +414,7 @@
                         ><span class="ja">プラン選択</span>Plan</label
                     >
                     <div
+                        class="plan-grid-wrap"
                         style="
                             display: grid;
                             grid-template-columns: 1fr 1fr 1fr;
