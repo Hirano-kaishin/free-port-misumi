@@ -401,9 +401,9 @@
                                 value="normal"
                                 checked
                             />
-                            <div class="plan-name">CAMP STAY</div>
+                            <div class="plan-name">CAMP STAY & SAUNA</div>
                             <div class="plan-desc">
-                                キャンプ宿泊<br />ギア持ち込みOK
+                                キャンプ宿泊 & サウナ<br />ギア持ち込みOK
                             </div>
                             <div class="plan-price">1人あたり5,000円</div>
                         </label>
@@ -844,7 +844,10 @@
                         card.classList.add("selected");
                         card.querySelector("input").checked = true;
 
-                        if (getSelectedPlan() === "omakase") {
+                        var selectedPlan = getSelectedPlan();
+                        // Omakase: disable both sauna and rental
+                        // Camp Stay: sauna included, disable sauna option
+                        if (selectedPlan === "omakase") {
                             rentalSection.style.opacity = "0.3";
                             rentalSection.style.pointerEvents = "none";
                             saunaSection.style.opacity = "0.3";
@@ -853,6 +856,15 @@
                                 cb.checked = false;
                                 cb.closest("tr").classList.remove("checked");
                             });
+                            saunaChecks.forEach(function (cb) {
+                                cb.checked = false;
+                                cb.closest("tr").classList.remove("checked");
+                            });
+                        } else if (selectedPlan === "normal") {
+                            rentalSection.style.opacity = "1";
+                            rentalSection.style.pointerEvents = "auto";
+                            saunaSection.style.opacity = "0.3";
+                            saunaSection.style.pointerEvents = "none";
                             saunaChecks.forEach(function (cb) {
                                 cb.checked = false;
                                 cb.closest("tr").classList.remove("checked");
