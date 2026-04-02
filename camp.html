@@ -6,8 +6,16 @@
         <link rel="stylesheet" href="css/shared.css" />
         <title>Camp &amp; Sauna &mdash; FREE PORT</title>
         <style>
-        .camp-sec{padding-top:100px;padding-bottom:100px}
-        @media(max-width:768px){.camp-sec{padding-top:40px;padding-bottom:40px}}
+            .camp-sec {
+                padding-top: 100px;
+                padding-bottom: 100px;
+            }
+            @media (max-width: 768px) {
+                .camp-sec {
+                    padding-top: 40px;
+                    padding-bottom: 40px;
+                }
+            }
         </style>
     </head>
     <body>
@@ -58,17 +66,47 @@
             >
             <div class="h-back-group">
                 <a href="index.html" class="h-back-btn">HOME</a>
-                <a href="javascript:history.back()" class="h-back-btn">← BACK</a>
+                <a href="javascript:history.back()" class="h-back-btn"
+                    >← BACK</a
+                >
             </div>
             <nav>
                 <ul class="h-nav">
-                    <li><a href="coffee.html"><span class="ja">コーヒー</span>Coffee</a></li>
-                    <li><a href="gear.html"><span class="ja">ギア</span>Gear</a></li>
-                    <li><a href="goods.html"><span class="ja">オーダーメイドグッズ</span>Goods</a></li>
-                    <li><a href="furniture.html"><span class="ja">雑貨・家具</span>Furniture</a></li>
-                    <li><a href="camp.html" class="active"><span class="ja">キャンプ・サウナ</span>Camp &amp; Sauna</a></li>
-                    <li><a href="about.html"><span class="ja">私たちについて</span>About</a></li>
-                    <li><a href="access.html"><span class="ja">アクセス</span>Access</a></li>
+                    <li>
+                        <a href="coffee.html"
+                            ><span class="ja">コーヒー</span>Coffee</a
+                        >
+                    </li>
+                    <li>
+                        <a href="gear.html"><span class="ja">ギア</span>Gear</a>
+                    </li>
+                    <li>
+                        <a href="goods.html"
+                            ><span class="ja">オーダーメイドグッズ</span
+                            >Goods</a
+                        >
+                    </li>
+                    <li>
+                        <a href="furniture.html"
+                            ><span class="ja">雑貨・家具</span>Furniture</a
+                        >
+                    </li>
+                    <li>
+                        <a href="camp.html" class="active"
+                            ><span class="ja">キャンプ・サウナ</span>Camp &amp;
+                            Sauna</a
+                        >
+                    </li>
+                    <li>
+                        <a href="about.html"
+                            ><span class="ja">私たちについて</span>About</a
+                        >
+                    </li>
+                    <li>
+                        <a href="access.html"
+                            ><span class="ja">アクセス</span>Access</a
+                        >
+                    </li>
                 </ul>
             </nav>
             <button class="h-menu-btn" aria-label="メニュー">
@@ -92,9 +130,7 @@
         </div>
 
         <!-- CAMP STAY -->
-        <section
-            class="sec sec-dark camp-sec"
-        >
+        <section class="sec sec-dark camp-sec">
             <div
                 class="rg rg-gap"
                 style="
@@ -114,7 +150,7 @@
                         海の見える<br />ウッドデッキで
                     </h2>
                     <p class="sec-body">
-                        店舗から車で約10分、天草の海を一望できるウッドデッキが、あなたのキャンプサイト。自分のギアを持ち込んで、自由なスタイルで過ごせます。
+                        店舗から車で約15分、天草の海を一望できるウッドデッキが、あなたのキャンプサイト。自分のギアを持ち込んで、自由なスタイルで過ごせます。
                     </p>
                     <p class="sec-body" style="margin-top: 16px">
                         道具がなくても大丈夫。テント・寝袋・たき火台・テーブルセットなど、すべてレンタル可能。夕暮れのたき火、朝のコーヒー。天草の自然に包まれた、ここでしか味わえない時間を。
@@ -161,9 +197,7 @@
         </section>
 
         <!-- SAUNA & KAYAK -->
-        <section
-            class="sec sec-dark camp-sec"
-        >
+        <section class="sec sec-dark camp-sec">
             <div
                 class="rg rg-gap"
                 style="
@@ -177,8 +211,8 @@
             >
                 <div class="reveal">
                     <p class="sec-label">
-                        <span class="ja">サウナ・カヤック</span>Sauna &amp;
-                        Kayak
+                        <span class="ja">サウナ・ビーチ</span>Sauna &amp;
+                        Beach
                     </p>
                     <h2 class="sec-title" style="color: #faf9f6">
                         火照りと海風、<br />自分だけの時間
@@ -194,9 +228,9 @@
                         </div>
                         <div class="feat-item">
                             <div>
-                                <div class="feat-title">カヤック</div>
+                                <div class="feat-title">ビーチ</div>
                                 <p class="feat-desc">
-                                    天草の穏やかな入り江をカヤックで探検。初心者でも安心して楽しめます。
+                                    目の前はすぐビーチ。SUPやカヤックなど、お気に入りのギアを持ち込んで天草の海を自由に楽しめます。
                                 </p>
                             </div>
                         </div>
@@ -251,101 +285,466 @@
         </section>
 
         <!-- PRICING -->
-        <section class="sec camp-sec" style="background:#1a1a1a">
-            <div style="max-width:900px;margin:0 auto">
-                <div class="reveal" style="text-align:center;margin-bottom:64px">
-                    <p class="sec-label"><span class="ja">料金プラン</span>Pricing</p>
-                    <h2 class="sec-title" style="color:#faf9f6">天草で、泊まろう。</h2>
+        <section class="sec camp-sec" style="background: #1a1a1a">
+            <div style="max-width: 900px; margin: 0 auto">
+                <div
+                    class="reveal"
+                    style="text-align: center; margin-bottom: 64px"
+                >
+                    <p class="sec-label">
+                        <span class="ja">料金プラン</span>Pricing
+                    </p>
+                    <h2 class="sec-title" style="color: #faf9f6">
+                        天草で、泊まろう。
+                    </h2>
                 </div>
 
                 <!-- BASE PLAN -->
-                <div class="reveal" style="margin-bottom:56px">
-                    <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--rust);padding-bottom:14px;margin-bottom:20px;flex-wrap:wrap;gap:8px">
+                <div class="reveal" style="margin-bottom: 56px">
+                    <div
+                        style="
+                            display: flex;
+                            align-items: baseline;
+                            justify-content: space-between;
+                            border-bottom: 2px solid var(--rust);
+                            padding-bottom: 14px;
+                            margin-bottom: 20px;
+                            flex-wrap: wrap;
+                            gap: 8px;
+                        "
+                    >
                         <div>
-                            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:#faf9f6">CAMP STAY</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.4)">キャンプ宿泊 ─ バレルサウナ付き</div>
+                            <div
+                                style="
+                                    font-family:
+                                        &quot;Bebas Neue&quot;, sans-serif;
+                                    font-size: 28px;
+                                    letter-spacing: 0.06em;
+                                    color: #faf9f6;
+                                "
+                            >
+                                CAMP STAY
+                            </div>
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: rgba(255, 255, 255, 0.4);
+                                "
+                            >
+                                キャンプ宿泊 ─ バレルサウナ付き
+                            </div>
                         </div>
-                        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--rust);letter-spacing:0.04em">¥5,000<span style="font-size:14px;color:rgba(255,255,255,0.35);margin-left:4px">/人</span></div>
+                        <div
+                            style="
+                                font-family: &quot;Bebas Neue&quot;, sans-serif;
+                                font-size: 36px;
+                                color: var(--rust);
+                                letter-spacing: 0.04em;
+                            "
+                        >
+                            1人あたり5,000円<span
+                                style="
+                                    font-size: 14px;
+                                    color: rgba(255, 255, 255, 0.35);
+                                    margin-left: 4px;
+                                "
+                                ></span
+                            >
+                        </div>
                     </div>
-                    <p style="font-size:13px;line-height:1.85;color:rgba(255,255,255,0.5);font-weight:300">海を一望できるウッドデッキでのキャンプ宿泊。バレルサウナは利用料込み。自分のギアを持ち込んでも、手ぶらでもOK。</p>
-                    <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px">
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">ウッドデッキ</span>
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">バレルサウナ</span>
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">外気浴スペース</span>
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">駐車場</span>
+                    <p
+                        style="
+                            font-size: 13px;
+                            line-height: 1.85;
+                            color: rgba(255, 255, 255, 0.5);
+                            font-weight: 300;
+                        "
+                    >
+                        海を一望できるウッドデッキでのキャンプ宿泊。バレルサウナは利用料込み（水風呂・シャワー付き）。<br>トイレ・温水シャワーはキャンプ場内の別施設に完備。自分のギアを持ち込んでも、手ぶらでもOK。
+                    </p>
+                    <div
+                        style="
+                            margin-top: 16px;
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 12px;
+                        "
+                    >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >ウッドデッキ</span
+                        >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >バレルサウナ</span
+                        >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >外気浴スペース</span
+                        >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >駐車場</span
+                        >
                     </div>
                 </div>
 
                 <!-- RENTAL OPTIONS -->
-                <div class="reveal" style="margin-bottom:56px">
-                    <div style="border-bottom:2px solid var(--ocean);padding-bottom:14px;margin-bottom:24px">
-                        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:#faf9f6">RENTAL OPTIONS</div>
-                        <div style="font-size:13px;color:rgba(255,255,255,0.4)">レンタルオプション ─ 手ぶらでも楽しめます</div>
+                <div class="reveal" style="margin-bottom: 56px">
+                    <div
+                        style="
+                            border-bottom: 2px solid var(--ocean);
+                            padding-bottom: 14px;
+                            margin-bottom: 24px;
+                        "
+                    >
+                        <div
+                            style="
+                                font-family: &quot;Bebas Neue&quot;, sans-serif;
+                                font-size: 28px;
+                                letter-spacing: 0.06em;
+                                color: #faf9f6;
+                            "
+                        >
+                            RENTAL OPTIONS
+                        </div>
+                        <div
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.4);
+                            "
+                        >
+                            レンタルオプション ─ 手ぶらでも楽しめます
+                        </div>
                     </div>
-                    <table style="width:100%;border-collapse:collapse;font-size:13px">
+                    <table
+                        style="
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 13px;
+                        "
+                    >
                         <thead>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.1)">
-                                <th style="text-align:left;padding:12px 0;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.2em;text-transform:uppercase;color:var(--rust);font-weight:400">Item</th>
-                                <th style="text-align:right;padding:12px 0;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.2em;text-transform:uppercase;color:var(--rust);font-weight:400">Price</th>
+                            <tr
+                                style="
+                                    border-bottom: 1px solid
+                                        rgba(255, 255, 255, 0.1);
+                                "
+                            >
+                                <th
+                                    style="
+                                        text-align: left;
+                                        padding: 12px 0;
+                                        font-family:
+                                            &quot;Barlow Condensed&quot;,
+                                            sans-serif;
+                                        font-size: 14px;
+                                        letter-spacing: 0.2em;
+                                        text-transform: uppercase;
+                                        color: var(--rust);
+                                        font-weight: 400;
+                                    "
+                                >
+                                    Item
+                                </th>
+                                <th
+                                    style="
+                                        text-align: right;
+                                        padding: 12px 0;
+                                        font-family:
+                                            &quot;Barlow Condensed&quot;,
+                                            sans-serif;
+                                        font-size: 14px;
+                                        letter-spacing: 0.2em;
+                                        text-transform: uppercase;
+                                        color: var(--rust);
+                                        font-weight: 400;
+                                    "
+                                >
+                                    Price
+                                </th>
                             </tr>
                         </thead>
-                        <tbody style="color:rgba(255,255,255,0.55);font-weight:300">
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">テント</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥3,000</td>
+                        <tbody
+                            style="
+                                color: rgba(255, 255, 255, 0.55);
+                                font-weight: 300;
+                            "
+                        >
+                            <tr
+                                style="
+                                    border-bottom: 1px solid
+                                        rgba(255, 255, 255, 0.06);
+                                "
+                            >
+                                <td style="padding: 14px 0">テント</td>
+                                <td
+                                    style="
+                                        text-align: right;
+                                        padding: 14px 0;
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 18px;
+                                        color: #faf9f6;
+                                        letter-spacing: 0.04em;
+                                    "
+                                >
+                                    準備中
+                                </td>
                             </tr>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">寝袋</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥1,000</td>
+                            <tr
+                                style="
+                                    border-bottom: 1px solid
+                                        rgba(255, 255, 255, 0.06);
+                                "
+                            >
+                                <td style="padding: 14px 0">たき火セット</td>
+                                <td
+                                    style="
+                                        text-align: right;
+                                        padding: 14px 0;
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 18px;
+                                        color: #faf9f6;
+                                        letter-spacing: 0.04em;
+                                    "
+                                >
+                                    準備中
+                                </td>
                             </tr>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">たき火台セット</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥2,000</td>
+                            <tr
+                                style="
+                                    border-bottom: 1px solid
+                                        rgba(255, 255, 255, 0.06);
+                                "
+                            >
+                                <td style="padding: 14px 0">
+                                    テーブル＆チェアセット
+                                </td>
+                                <td
+                                    style="
+                                        text-align: right;
+                                        padding: 14px 0;
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 18px;
+                                        color: #faf9f6;
+                                        letter-spacing: 0.04em;
+                                    "
+                                >
+                                    準備中
+                                </td>
                             </tr>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">テーブル＆チェアセット</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥1,000</td>
+                            <tr
+                                style="
+                                    border-bottom: 1px solid
+                                        rgba(255, 255, 255, 0.06);
+                                "
+                            >
+                                <td style="padding: 14px 0">ランタン</td>
+                                <td
+                                    style="
+                                        text-align: right;
+                                        padding: 14px 0;
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 18px;
+                                        color: #faf9f6;
+                                        letter-spacing: 0.04em;
+                                    "
+                                >
+                                    準備中
+                                </td>
                             </tr>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">ランタン</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥500</td>
-                            </tr>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">BBQグリルセット</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥2,500</td>
-                            </tr>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-                                <td style="padding:14px 0">カヤック（時間無制限）</td>
-                                <td style="text-align:right;padding:14px 0;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#faf9f6;letter-spacing:0.04em">¥5,000</td>
+                            <tr
+                                style="
+                                    border-bottom: 1px solid
+                                        rgba(255, 255, 255, 0.06);
+                                "
+                            >
+                                <td style="padding: 14px 0">BBQグリルセット</td>
+                                <td
+                                    style="
+                                        text-align: right;
+                                        padding: 14px 0;
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 18px;
+                                        color: #faf9f6;
+                                        letter-spacing: 0.04em;
+                                    "
+                                >
+                                    準備中
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- OMAKASE OPTION -->
-                <div class="reveal" style="margin-bottom:64px">
-                    <div style="border-bottom:2px solid var(--rust);padding-bottom:14px;margin-bottom:20px;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                <div class="reveal" style="margin-bottom: 64px">
+                    <div
+                        style="
+                            border-bottom: 2px solid var(--rust);
+                            padding-bottom: 14px;
+                            margin-bottom: 20px;
+                            display: flex;
+                            align-items: baseline;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            gap: 8px;
+                        "
+                    >
                         <div>
-                            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:#faf9f6">OMAKASE PLAN</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.4)">おまかせプラン ─ 設営から撤収まで全てお任せ</div>
+                            <div
+                                style="
+                                    font-family:
+                                        &quot;Bebas Neue&quot;, sans-serif;
+                                    font-size: 28px;
+                                    letter-spacing: 0.06em;
+                                    color: #faf9f6;
+                                "
+                            >
+                                OMAKASE PLAN
+                            </div>
+                            <div
+                                style="
+                                    font-size: 13px;
+                                    color: rgba(255, 255, 255, 0.4);
+                                "
+                            >
+                                おまかせプラン ─ 設営から撤収まで全てお任せ
+                            </div>
                         </div>
-                        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--rust);letter-spacing:0.04em">¥15,000<span style="font-size:14px;color:rgba(255,255,255,0.35);margin-left:4px">/人</span></div>
+                        <div
+                            style="
+                                font-family: &quot;Bebas Neue&quot;, sans-serif;
+                                font-size: 36px;
+                                color: var(--rust);
+                                letter-spacing: 0.04em;
+                            "
+                        >
+                            1人あたり20,000円<span
+                                style="
+                                    font-size: 14px;
+                                    color: rgba(255, 255, 255, 0.35);
+                                    margin-left: 4px;
+                                "
+                                ></span
+                            >
+                        </div>
                     </div>
-                    <p style="font-size:13px;line-height:1.85;color:rgba(255,255,255,0.5);font-weight:300">テント設営、たき火の準備、撤収まですべてスタッフが対応。手ぶらで来て、くつろぐだけ。キャンプ初心者にもおすすめのフルサポートプランです。</p>
-                    <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:12px">
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">テント設営・撤収</span>
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">全レンタル込み</span>
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">バレルサウナ</span>
-                        <span style="font-size:13px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.1);padding:6px 14px">たき火準備</span>
+                    <p
+                        style="
+                            font-size: 13px;
+                            line-height: 1.85;
+                            color: rgba(255, 255, 255, 0.5);
+                            font-weight: 300;
+                        "
+                    >
+                        テント設営、たき火の準備、撤収まですべてスタッフが対応。手ぶらで来て、くつろぐだけ。キャンプ初心者にもおすすめのフルサポートプランです。<br>（内訳：キャンプ宿泊 5,000円 ＋ レンタル一式 9,000円 ＋ 設営撤収費 6,000円）
+                    </p>
+                    <div
+                        style="
+                            margin-top: 16px;
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 12px;
+                        "
+                    >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >テント設営・撤収</span
+                        >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >全レンタル込み</span
+                        >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >バレルサウナ</span
+                        >
+                        <span
+                            style="
+                                font-size: 13px;
+                                color: rgba(255, 255, 255, 0.35);
+                                border: 1px solid rgba(255, 255, 255, 0.1);
+                                padding: 6px 14px;
+                            "
+                            >たき火準備</span
+                        >
                     </div>
                 </div>
 
                 <!-- CTA -->
-                <div class="reveal" style="text-align:center">
-                    <p style="font-size:13px;color:rgba(255,255,255,0.5);font-weight:300;margin-bottom:8px">ご予約・お問い合わせはメールまたはInstagramのDMにて承ります。</p>
-                    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
-                        <a href="reserve.html" class="cta-btn" style="background:#c4622d;color:#faf9f6;border-color:#c4622d">予約する →</a>
-                        <a href="access.html" class="cta-btn">アクセスを見る →</a>
+                <div class="reveal" style="text-align: center">
+                    <p
+                        style="
+                            font-size: 13px;
+                            color: rgba(255, 255, 255, 0.5);
+                            font-weight: 300;
+                            margin-bottom: 8px;
+                        "
+                    >
+                        ご予約・お問い合わせはメールまたはInstagramのDMにて承ります。
+                    </p>
+                    <div
+                        style="
+                            display: flex;
+                            gap: 16px;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                        "
+                    >
+                        <a
+                            href="reserve.html"
+                            class="cta-btn"
+                            style="
+                                background: #c4622d;
+                                color: #faf9f6;
+                                border-color: #c4622d;
+                            "
+                            >予約する →</a
+                        >
+                        <a href="access.html" class="cta-btn"
+                            >アクセスを見る →</a
+                        >
                     </div>
                 </div>
             </div>
