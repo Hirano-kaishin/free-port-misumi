@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>管理画面 - FREE PORT</title>
+<link rel="stylesheet" href="css/shared.css">
+<style>
+body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
+.admin-wrap{max-width:900px;margin:0 auto;padding:20px}
+
+/* ログイン画面 */
+.login-overlay{position:fixed;inset:0;background:#0e0e0e;z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-box{text-align:center;max-width:360px;width:100%;padding:0 20px}
+.login-box h1{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.06em;margin-bottom:8px}
+.login-box p{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:32px}
+.login-input{width:100%;padding:14px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#faf9f6;font-size:14px;outline:none;margin-bottom:16px;text-align:center;letter-spacing:0.1em}
+.login-input:focus{border-color:var(--rust)}
+.login-btn{width:100%;padding:14px;background:var(--rust);color:#faf9f6;border:2px solid var(--rust);font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
+.login-btn:hover{background:transparent;color:var(--rust)}
+.login-error{color:#e74c3c;font-size:12px;margin-top:8px;display:none}
+
+/* タブ */
+.page-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px}
+.page-tab{padding:8px 16px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;border:1px solid transparent;transition:all 0.2s;background:none}
+.page-tab:hover{color:rgba(255,255,255,0.7)}
+.page-tab.active{color:var(--rust);border-color:var(--rust)}
+
+/* セクション */
+.editor-section{margin-bottom:40px;border:1px solid rgba(255,255,255,0.08);padding:24px;background:rgba(255,255,255,0.02)}
+.editor-section h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.06em;color:var(--rust);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.editor-section h3 button{font-size:11px;padding:4px 12px;background:none;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);cursor:pointer}
+.editor-section h3 button:hover{color:#e74c3c;border-color:#e74c3c}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--rust);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif}
+.field input,.field textarea,.field select{width:100%;padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#faf9f6;font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s}
+.field input:focus,.field textarea:focus{border-color:var(--rust)}
+.field textarea{resize:vertical;min-height:60px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ボタン */
+.save-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 32px;background:var(--rust);color:#faf9f6;border:2px solid var(--rust);font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:16px}
+.save-btn:hover{background:transparent;color:var(--rust)}
+.save-btn:disabled{opacity:0.4;pointer-events:none}
+.add-btn{padding:8px 20px;background:none;color:rgba(255,255,255,0.4);border:1px dashed rgba(255,255,255,0.15);font-size:12px;cursor:pointer;width:100%;margin-top:8px;transition:all 0.2s}
+.add-btn:hover{color:var(--rust);border-color:var(--rust)}
+
+/* タグ入力 */
+.tags-input{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);min-height:40px}
+.tag-chip{font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:6px}
+.tag-chip .remove{cursor:pointer;color:rgba(255,255,255,0.3)}
+.tag-chip .remove:hover{color:#e74c3c}
+
+/* ステータス */
+.status-msg{position:fixed;bottom:20px;right:20px;padding:12px 24px;font-size:13px;z-index:100;transition:all 0.3s;transform:translateY(100px);opacity:0}
+.status-msg.show{transform:translateY(0);opacity:1}
+.status-msg.success{background:#27ae60;color:#fff}
+.status-msg.error{background:#e74c3c;color:#fff}
+
+/* ヘッダー */
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.admin-header h1{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em}
+.admin-header a{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none}
+.admin-header a:hover{color:var(--rust)}
+
+@media(max-width:768px){
+  .field-row{grid-template-columns:1fr}
+  .page-tabs{gap:2px}
+  .page-tab{padding:6px 10px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- ログイン画面 -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h1>ADMIN</h1>
+    <p>管理画面にログイン</p>
+    <input type="password" class="login-input" id="passwordInput" placeholder="パスワードを入力">
+    <button class="login-btn" id="loginBtn">LOGIN</button>
+    <div class="login-error" id="loginError">パスワードが正しくありません</div>
+    <a href="javascript:history.back()" style="display:inline-block;margin-top:24px;font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none">← 戻る</a>
+  </div>
+</div>
+
+<!-- 管理画面本体 -->
+<div class="admin-wrap" id="adminArea" style="display:none">
+  <div class="admin-header">
+    <h1>FREE PORT 管理画面</h1>
+    <a href="index.html">サイトに戻る</a>
+  </div>
+
+  <!-- ページタブ -->
+  <div class="page-tabs" id="pageTabs">
+    <button class="page-tab active" data-page="index">INDEX</button>
+    <button class="page-tab" data-page="camp">CAMP</button>
+    <button class="page-tab" data-page="coffee">COFFEE</button>
+    <button class="page-tab" data-page="gear">GEAR</button>
+    <button class="page-tab" data-page="goods">GOODS</button>
+    <button class="page-tab" data-page="furniture">FURNITURE</button>
+    <button class="page-tab" data-page="about">ABOUT</button>
+    <button class="page-tab" data-page="access">ACCESS</button>
+    <button class="page-tab" data-page="footer">FOOTER</button>
+    <button class="page-tab" data-page="password" style="margin-left:auto;color:rgba(255,255,255,0.25)">PASSWORD</button>
+  </div>
+
+  <!-- エディタ本体 -->
+  <div id="editorArea">
+    <p style="color:rgba(255,255,255,0.3);font-size:13px">データを読み込み中...</p>
+  </div>
+
+  <!-- 保存ボタン -->
+  <button class="save-btn" id="saveBtn" style="display:none">保存する</button>
+</div>
+
+<div class="status-msg" id="statusMsg"></div>
+
+<script>
+(function(){
+  // ====== 設定 ======
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyClKNCA5ABWMG3DswTJdQOUFiYwj5udrbhtJRL-nAdwY_AuV1k4CHacMMdpR_tL1FQ/exec';
+  var LOCAL_PASSWORD = localStorage.getItem('fp_admin_password') || '0000';
+  var password = '';
+  var currentPage = 'index';
+  var pageData = {};
+  var specialPages = ['index', 'footer', 'password'];
+
+  // ====== ログイン ======
+  var loginOverlay = document.getElementById('loginOverlay');
+  var adminArea = document.getElementById('adminArea');
+  var passwordInput = document.getElementById('passwordInput');
+  var loginBtn = document.getElementById('loginBtn');
+  var loginError = document.getElementById('loginError');
+
+  // セッション確認
+  if (sessionStorage.getItem('fp_admin_pw')) {
+    password = sessionStorage.getItem('fp_admin_pw');
+    loginOverlay.style.display = 'none';
+    adminArea.style.display = 'block';
+    loadPageData(currentPage);
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  passwordInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogin() {
+    var pw = passwordInput.value;
+    if (!pw) return;
+
+    var checkPw = localStorage.getItem('fp_admin_password') || '0000';
+    if (pw === checkPw) {
+      password = pw;
+      sessionStorage.setItem('fp_admin_pw', pw);
+      loginOverlay.style.display = 'none';
+      adminArea.style.display = 'block';
+      loadPageData(currentPage);
+    } else {
+      loginError.style.display = 'block';
+    }
+  }
+
+  // ====== ページタブ ======
+  document.getElementById('pageTabs').addEventListener('click', function(e) {
+    if (e.target.classList.contains('page-tab')) {
+      document.querySelectorAll('.page-tab').forEach(function(t) { t.classList.remove('active'); });
+      e.target.classList.add('active');
+      currentPage = e.target.dataset.page;
+      loadPageData(currentPage);
+    }
+  });
+
+  // ====== デフォルトデータ ======
+  var defaultData = {
+    camp: {
+      sections: [
+        { id:'camp_intro', section_key:'camp_intro', label_ja:'キャンプ', label_en:'Camp Stay', title:'海の見える\nウッドデッキで', body:'店舗から車で約15分、天草の海を一望できるウッドデッキが、あなたのキャンプサイト。自分のギアを持ち込んで、自由なスタイルで過ごせます。', body2:'道具がなくても大丈夫。テント・たき火セット・テーブルセットなど、すべてレンタル可能。夕暮れのたき火、朝のコーヒー。天草の自然に包まれた、ここでしか味わえない時間を。', order:1 },
+        { id:'sauna_beach', section_key:'sauna_beach', label_ja:'サウナ・ビーチ', label_en:'Sauna & Beach', title:'火照りと海風、\n自分だけの時間', body:'', body2:'', order:2 },
+        { id:'offgrid', section_key:'offgrid', label_ja:'', label_en:'', title:'', body:'当店キャンプ場は「オフグリッド」をテーマに、自然の恵みを生かした運営を行っております。不便な部分もございますが、楽しみながら防災意識を高められる場所です。', body2:'電気は太陽光発電、水風呂は塩分混じりの地下水を使用。温水はございませんが、キャンプ場内の別施設にてご利用いただけます。', order:3 }
+      ],
+      plans: [
+        { id:'camp_stay', plan_key:'camp_stay', name_en:'CAMP STAY & SAUNA', name_ja:'キャンプ宿泊 & サウナ', price:'1人あたり5,000円', description:'海を一望できるウッドデッキでのキャンプ宿泊。バレルサウナの利用料込み。\nトイレ・温水シャワーはキャンプ場内の別施設に完備。自分のギアを持ち込んでも、手ぶらでもOK。', description2:'', tags:'ウッドデッキ,外気浴スペース,駐車場,完全貸し切り,電源あり（2,000Wh）', order:1 },
+        { id:'day_camp', plan_key:'day_camp', name_en:'DAY CAMP', name_ja:'デイキャンプ ─ 12:00〜18:00', price:'1人あたり2,000円', description:'宿泊なしで気軽にキャンプ体験。海を眺めながらのんびり過ごす贅沢な時間を、12:00から18:00までお楽しみいただけます。\nオプションのレンタルで、バレルサウナやBBQグリルセット、たき火セットもご利用可能。', description2:'', tags:'12:00〜18:00,ウッドデッキ,サウナ（オプション）,BBQ（オプション）,駐車場', order:2 },
+        { id:'barrel_sauna', plan_key:'barrel_sauna', name_en:'BARREL SAUNA', name_ja:'バレルサウナ ─ 2名から受付・3時間制', price:'1人あたり3,000円', description:'本格フィンランド式バレルサウナを貸し切りでご利用いただけます。薪ストーブ＆セルフロウリュウで"ととのう"体験を。\n水風呂・シャワー完備。海風の外気浴で心身をリセット。\nご利用時間は3時間。4名以上のご利用で1人あたり2,500円。', description2:'', tags:'薪ストーブ,セルフロウリュウ,水風呂,外気浴,3時間制', order:3 },
+        { id:'omakase', plan_key:'omakase', name_en:'OMAKASE PLAN', name_ja:'おまかせプラン ─ 2名から受付・設営から撤収まで全てお任せ', price:'1人あたり10,000円', description:'テント設営、たき火の準備、撤収まですべてスタッフが対応。手ぶらで来て、くつろぐだけ。キャンプ初心者にもおすすめのフルサポートプランです。\n2名様から受付。', description2:'', tags:'テント設営・撤収,全レンタル込み,バレルサウナ,たき火準備', order:4 }
+      ],
+      options: [
+        { id:'rental_tent', group_key:'rental', group_name_en:'RENTAL OPTIONS', group_name_ja:'レンタルオプション ─ 手ぶらでも楽しめます', item_name:'テント', price:'準備中', order:1 },
+        { id:'rental_fire', group_key:'rental', group_name_en:'', group_name_ja:'', item_name:'たき火セット', price:'準備中', order:2 },
+        { id:'rental_table', group_key:'rental', group_name_en:'', group_name_ja:'', item_name:'テーブル＆チェアセット', price:'準備中', order:3 },
+        { id:'rental_lantern', group_key:'rental', group_name_en:'', group_name_ja:'', item_name:'ランタン', price:'準備中', order:4 },
+        { id:'rental_bbq', group_key:'rental', group_name_en:'', group_name_ja:'', item_name:'BBQグリルセット', price:'準備中', order:5 },
+        { id:'sauna_aroma', group_key:'sauna_included', group_name_en:'SAUNA INCLUDED', group_name_ja:'サウナ付帯', item_name:'rentoアロマオイル', price:'無料', order:1 },
+        { id:'sauna_coleman', group_key:'sauna_included', group_name_en:'', group_name_ja:'', item_name:'Colemanインフィニティチェア', price:'無料', order:2 },
+        { id:'sauna_nemo', group_key:'sauna_included', group_name_en:'', group_name_ja:'', item_name:'NEMOリクライナーチェア', price:'無料', order:3 },
+        { id:'sauna_poncho', group_key:'sauna_included', group_name_en:'', group_name_ja:'', item_name:'オリジナルポンチョ＆ハット レンタル', price:'500円', order:4 }
+      ],
+      images: [
+        { id:'camp_hero', section_key:'hero', image_url:'images/IMG_6285.jpg', alt:'キャンプヒーロー', position:'center', order:1 },
+        { id:'camp_stay_1', section_key:'camp_stay', image_url:'images/IMG_6236 (1).JPG', alt:'ウッドデッキ', position:'center 60%', order:1 },
+        { id:'camp_stay_2', section_key:'camp_stay', image_url:'images/IMG_6282.jpg', alt:'キャンプ', position:'center', order:2 },
+        { id:'camp_stay_3', section_key:'camp_stay', image_url:'images/IMG_6293.jpg', alt:'キャンプ', position:'center', order:3 },
+        { id:'sauna_1', section_key:'sauna_beach', image_url:'images/IMG_6286.jpg', alt:'サウナ', position:'center', order:1 },
+        { id:'sauna_2', section_key:'sauna_beach', image_url:'images/IMG_6288.JPG', alt:'カヤック夕日', position:'center', order:2 },
+        { id:'sauna_3', section_key:'sauna_beach', image_url:'images/IMG_6229 (1).JPG', alt:'ビーチ夕日', position:'center', order:3 },
+        { id:'sauna_4', section_key:'sauna_beach', image_url:'images/IMG_6238.JPG', alt:'ウッドデッキ夜', position:'center 60%', order:4 }
+      ]
+    },
+    coffee: {
+      sections: [
+        { id:'coffee_intro', section_key:'coffee_intro', label_ja:'コーヒーについて', label_en:'Our Coffee', title:'世界遺産の港を\n眺めながら', body:'イタリア製エスプレッソマシンで丁寧に淹れるこだわりの一杯。', body2:'三角西港の海風を感じながら、店内でもテイクアウトでも。', order:1 },
+        { id:'coffee_view', section_key:'coffee_view', label_ja:'', label_en:'View from the shop', title:'窓の向こうは、\n三角西港の海', body:'店内の窓からは、世界遺産・三角西港の穏やかな海と天草の島々が広がります。行き交う船を眺めながら、ゆっくりとコーヒーを楽しむ贅沢な時間を。', body2:'', order:2 },
+        { id:'popup', section_key:'popup', label_ja:'ポップアップスペース', label_en:'Pop-up Space', title:'この場所が、\nあなたの店に', body:'FREE PORTコーヒースタンドの横に、ポップアップまたはマルシェとしてご利用いただけるスペースがございます。', body2:'短期利用OK。まずはお気軽にご相談ください。', order:3 }
+      ],
+      plans: [
+        { id:'drip', plan_key:'drip', name_en:'DRIP COFFEE', name_ja:'ドリップコーヒー', price:'500円', description:'', description2:'', tags:'', order:1 },
+        { id:'espresso', plan_key:'espresso', name_en:'ESPRESSO', name_ja:'エスプレッソ', price:'500円', description:'', description2:'', tags:'', order:2 },
+        { id:'latte', plan_key:'latte', name_en:'CAFFE LATTE', name_ja:'カフェラテ', price:'600円', description:'', description2:'', tags:'', order:3 }
+      ],
+      options: [],
+      images: [
+        { id:'coffee_hero', section_key:'coffee_hero', image_url:'images/coffee-hero.jpg', alt:'コーヒースタンド', position:'center', order:1 },
+        { id:'coffee_view_bg', section_key:'coffee_view', image_url:'images/coffee-view.jpg', alt:'三角西港の景色', position:'center', order:1 },
+        { id:'popup_img', section_key:'popup', image_url:'images/popup-space.jpg', alt:'ポップアップスペース', position:'center', order:1 }
+      ]
+    },
+    gear: {
+      sections: [
+        { id:'gear_hero', section_key:'gear_hero', label_ja:'', label_en:'', title:'CAMP\nGEAR', body:'', body2:'', order:0 },
+        { id:'gear_intro', section_key:'gear_intro', label_ja:'ブランドセレクト', label_en:'BRAND SELECT', title:'', body:'国内外の人気アウトドアブランドからスタッフが厳選したキャンプギアを取り揃えています。海外買い付けによる国内未販売のギアも取り扱っており、ここでしか出会えないアイテムも。', body2:'チェア、テーブル、調理器具、ランタンなど、実際に手に取ってサイズ感や使い心地をお試しいただけます。', body3:'キャンプ初心者の方にもスタッフが丁寧にご案内いたしますので、お気軽にご来店ください。', order:1 }
+      ],
+      plans: [], options: [],
+      images: [
+        { id:'gear_hero', section_key:'gear_hero', image_url:'images/shop-hero.jpg', alt:'ギアショップ', position:'center', order:1 },
+        { id:'gear_1', section_key:'gear_gallery', image_url:'images/DSC03333.JPG', alt:'ギア展示', position:'center', order:1 },
+        { id:'gear_2', section_key:'gear_gallery', image_url:'images/gear-shelf1.jpg', alt:'ギア棚1', position:'center', order:2 },
+        { id:'gear_3', section_key:'gear_gallery', image_url:'images/gear-shelf2.jpg', alt:'ギア棚2', position:'center', order:3 }
+      ]
+    },
+    goods: {
+      sections: [
+        { id:'goods_hero', section_key:'goods_hero', label_ja:'', label_en:'', title:'ORDERMADE\nGOODS', body:'', body2:'', order:0 },
+        { id:'goods_intro', section_key:'goods_intro', label_ja:'オーダーメイド オリジナル', label_en:'ORDERMADE ORIGINAL', title:'', body:'お気に入りの写真やイラストから、マグカップ・クッション・マット・ブランケットなど、あらゆるグッズをオーダーメイドで制作いたします。', body2:'大切な人へのプレゼント、企業・店舗のノベルティ、イベントグッズなど、1個から大量注文まで対応可能です。', body3:'デザインのご相談からお気軽にお問い合わせください。', order:1 }
+      ],
+      plans: [], options: [],
+      images: [
+        { id:'goods_hero', section_key:'goods_hero', image_url:'images/Gemini_Generated_Image_inpamkinpamkinpa.jpg', alt:'オーダーメイドグッズ', position:'center', order:1 },
+        { id:'goods_1', section_key:'goods_gallery', image_url:'images/IMG_6306.JPG', alt:'グッズ展示', position:'center 35%', order:1 },
+        { id:'goods_2', section_key:'goods_gallery', image_url:'images/DSC03374.JPG', alt:'グッズ', position:'center', order:2 },
+        { id:'goods_3', section_key:'goods_gallery', image_url:'images/DSC03376.JPG', alt:'グッズ', position:'center', order:3 }
+      ]
+    },
+    furniture: {
+      sections: [
+        { id:'furniture_hero', section_key:'furniture_hero', label_ja:'', label_en:'', title:'INTERIOR\n& FURNITURE', body:'', body2:'', order:0 },
+        { id:'furniture_intro', section_key:'furniture_intro', label_ja:'インテリア・家具', label_en:'INTERIOR & FURNITURE', title:'', body:'レザーソファやアイアンシェルフなど、空間を引き締めるインテリアをセレクト。', body2:'アートクッションやタイガーラグなど、個性を演出するアイテムも取り揃えています。', body3:'リサイクルショップとも提携しており、掘り出し物に出会えることも。', body4:'店頭で実際の質感やサイズ感をお確かめください。', order:1 }
+      ],
+      plans: [], options: [],
+      images: [
+        { id:'furniture_hero', section_key:'furniture_hero', image_url:'images/Gemini_Generated_Image_1im3hc1im3hc1im3.jpg', alt:'家具', position:'center', order:1 },
+        { id:'furniture_1', section_key:'furniture_gallery', image_url:'images/furniture-sofa.jpg', alt:'ソファ', position:'center', order:1 },
+        { id:'furniture_2', section_key:'furniture_gallery', image_url:'images/furniture-rug.jpg', alt:'ラグ', position:'center', order:2 },
+        { id:'furniture_3', section_key:'furniture_gallery', image_url:'images/furniture-cushion.jpg', alt:'クッション', position:'center', order:3 }
+      ]
+    },
+    about: {
+      sections: [
+        { id:'about_hero', section_key:'about_hero', label_ja:'フリーポートについて', label_en:'About Free Port', title:'COAST\nMEETS\nCULTURE', body:'', body2:'', order:0 },
+        { id:'about_story', section_key:'about_story', label_ja:'私たちのストーリー', label_en:'Our Story', title:'世界遺産の\n港に佇む', body:'世界文化遺産・三角西港のすぐそばに佇む、カフェ&アウトドアショップです。', body2:'歴史ある港町の風景を眺めながら、スペシャルティコーヒーとアウトドアの心地よさを同時に楽しめる空間をつくりました。', body3:'コーヒー、キャンプギア、ビーチでのキャンプやサウナ体験 — 日常の境界を越えた自由を、FREE PORTスタイルでお届けします。', order:1 },
+        { id:'about_values', section_key:'about_values', label_ja:'私たちの価値観', label_en:'Our Values', title:'THREE PILLARS', body:'', body2:'', order:2 },
+        { id:'about_pillar_coffee', section_key:'about_pillar_coffee', label_ja:'', label_en:'', title:'COFFEE', body:'世界遺産の港で味わう特別な一杯', body2:'', order:3 },
+        { id:'about_pillar_shop', section_key:'about_pillar_shop', label_ja:'', label_en:'', title:'SHOP', body:'キャンプギアやオリジナル雑貨を販売', body2:'', order:4 },
+        { id:'about_pillar_camp', section_key:'about_pillar_camp', label_ja:'', label_en:'', title:'CAMP & SAUNA', body:'絶景ビーチとサウナを満喫', body2:'', order:5 }
+      ],
+      plans: [], options: [],
+      images: [
+        { id:'about_hero', section_key:'about_hero', image_url:'images/IMG_6284.JPG', alt:'店舗外観', position:'center', order:1 },
+        { id:'about_story_1', section_key:'about_story', image_url:'images/IMG_6280.JPG', alt:'店舗', position:'center', order:1 },
+        { id:'about_story_2', section_key:'about_story', image_url:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=70', alt:'コーヒー', position:'center', order:2 },
+        { id:'about_story_3', section_key:'about_story', image_url:'images/IMG_6285.jpg', alt:'キャンプ', position:'center', order:3 }
+      ]
+    },
+    access: {
+      sections: [
+        { id:'access_hero', section_key:'access_hero', label_ja:'アクセス', label_en:'Access', title:'FIND\nYOUR PORT', body:'', body2:'', order:0 },
+        { id:'access_info', section_key:'access_info', label_ja:'道順・アクセス', label_en:'', title:'GET HERE', body:'〒869-3207\n熊本県宇城市三角町三角浦1337-11', body2:'三角駅より徒歩5分\n三角西港より徒歩3分\n駐車場あり', order:1 }
+      ],
+      plans: [], options: [],
+      images: [
+        { id:'access_hero', section_key:'access_hero', image_url:'images/IMG_6167.jpeg', alt:'三角西港', position:'center', order:1 }
+      ]
+    },
+    index: {
+      bg_image: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1600&q=75',
+      tagline: '三角西港 · Kumamoto · Est. 2026',
+      gate_buttons: [
+        { id:'shop', type:'button', en:'SHOP', ja:'コーヒー・ギア・雑貨', loc:'Misumi — 三角', href:'' },
+        { id:'camp', type:'link', en:'CAMP & SAUNA', ja:'キャンプ・サウナ・カヤック', loc:'Amakusa — 天草', href:'camp.html' }
+      ],
+      shop_cards: [
+        { id:'coffee', en:'Coffee &\nPop-up Space', ja:'コーヒー &\nポップアップスペース', image:'images/coffee-machine.jpg', position:'center', href:'coffee.html' },
+        { id:'gear', en:'Camp Gear', ja:'キャンプギア', image:'images/shop-gear1.jpg', position:'center 65%', href:'gear.html' },
+        { id:'goods', en:'Ordermade Goods', ja:'オーダーメイドグッズ', image:'images/Gemini_Generated_Image_inpamkinpamkinpa.jpg', position:'center', href:'goods.html' },
+        { id:'furniture', en:'Furniture', ja:'雑貨・家具', image:'images/furniture-sofa.jpg', position:'center', href:'furniture.html' }
+      ]
+    },
+    footer: {
+      links: [
+        { id:'about', label:'About', href:'about.html' },
+        { id:'access', label:'Access', href:'access.html' }
+      ],
+      location_top: '三角西港 · 天草',
+      location_shop: '三角西港',
+      instagram_url: 'https://www.instagram.com/freeport.misumi/',
+      instagram_label: 'Instagram'
+    }
+  };
+
+  // ====== データ読み込み ======
+  function loadPageData(page) {
+    var editor = document.getElementById('editorArea');
+    editor.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px">データを読み込み中...</p>';
+    document.getElementById('saveBtn').style.display = 'none';
+
+    // 特殊ページ
+    if (specialPages.indexOf(page) >= 0) {
+      try {
+        if (page === 'password') {
+          renderPasswordEditor();
+          return;
+        }
+        var local = localStorage.getItem('fp_cms_' + page);
+        if (local) {
+          try { pageData = JSON.parse(local); } catch(e) { pageData = JSON.parse(JSON.stringify(defaultData[page])); }
+        } else {
+          pageData = JSON.parse(JSON.stringify(defaultData[page]));
+        }
+        if (page === 'index') renderIndexEditor(pageData);
+        else if (page === 'footer') renderFooterEditor(pageData);
+        document.getElementById('saveBtn').style.display = 'inline-flex';
+      } catch(err) {
+        editor.innerHTML = '<p style="color:#e74c3c;font-size:13px">エラー: ' + err.message + '</p>';
+        console.error('Admin render error:', err);
+      }
+      return;
+    }
+
+    // 通常ページ
+    // 1. localStorageから読み込み
+    local = localStorage.getItem('fp_cms_' + page);
+    if (local) {
+      try {
+        pageData = JSON.parse(local);
+        renderEditor(page, pageData);
+        document.getElementById('saveBtn').style.display = 'inline-flex';
+        return;
+      } catch(e) {}
+    }
+
+    // 2. GASから読み込み（設定済みの場合）
+    fetch(GAS_URL + '?action=getPageData&page=' + page)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.sections && data.sections.length > 0) {
+          pageData = data;
+        } else {
+          pageData = defaultData[page] || { sections:[], plans:[], options:[], images:[] };
+        }
+        renderEditor(page, pageData);
+        document.getElementById('saveBtn').style.display = 'inline-flex';
+      })
+      .catch(function() {
+        // 3. デフォルトデータ
+        pageData = defaultData[page] || { sections:[], plans:[], options:[], images:[] };
+        renderEditor(page, pageData);
+        document.getElementById('saveBtn').style.display = 'inline-flex';
+      });
+  }
+
+  // ====== INDEX エディタ ======
+  function renderIndexEditor(data) {
+    var editor = document.getElementById('editorArea');
+    // デフォルト値のフォールバック
+    data.bg_image = data.bg_image || '';
+    data.tagline = data.tagline || '';
+    data.gate_buttons = data.gate_buttons || [];
+    data.shop_cards = data.shop_cards || [];
+    var html = '';
+
+    // 背景画像
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin-bottom:16px;letter-spacing:0.1em">BACKGROUND</h2>';
+    html += '<div class="editor-section">';
+    html += '<h3>背景画像</h3>';
+    if (data.bg_image) {
+      html += '<div style="margin-bottom:12px;width:100%;max-width:400px;height:180px;background-image:url(\'' + esc(data.bg_image) + '\');background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.1)"></div>';
+    }
+    html += '<div class="field"><label>背景画像URL</label><input name="bg_image" value="' + esc(data.bg_image) + '"></div>';
+    html += '<div class="field"><label>画像ファイルを選択</label><input type="file" accept="image/*" class="idx-bg-file" style="font-size:12px;color:rgba(255,255,255,0.4)"></div>';
+    html += '</div>';
+
+    // タグライン
+    html += '<div class="editor-section">';
+    html += '<h3>TAGLINE</h3>';
+    html += '<div class="field"><label>タグライン（ロゴ下テキスト）</label><input name="tagline" value="' + esc(data.tagline) + '"></div>';
+    html += '</div>';
+
+    // ゲートボタン（SHOP / CAMP & SAUNA）
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">GATE BUTTONS</h2>';
+    if (data.gate_buttons) {
+      data.gate_buttons.forEach(function(btn, i) {
+        html += '<div class="editor-section" data-type="gate_button" data-index="' + i + '">';
+        html += '<h3>BUTTON: ' + esc(btn.en) + '<button onclick="removeIndexItem(\'gate_buttons\',' + i + ')">削除</button></h3>';
+        html += '<div class="field-row">';
+        html += '<div class="field"><label>英語テキスト</label><input name="en" value="' + esc(btn.en) + '"></div>';
+        html += '<div class="field"><label>日本語テキスト</label><input name="ja" value="' + esc(btn.ja) + '"></div>';
+        html += '</div>';
+        html += '<div class="field-row">';
+        html += '<div class="field"><label>場所テキスト</label><input name="loc" value="' + esc(btn.loc) + '"></div>';
+        html += '<div class="field"><label>タイプ</label><select name="type"><option value="button"' + (btn.type === 'button' ? ' selected' : '') + '>ボタン（SHOP切替）</option><option value="link"' + (btn.type === 'link' ? ' selected' : '') + '>リンク</option></select></div>';
+        html += '</div>';
+        html += '<div class="field"><label>リンク先（タイプがリンクの場合）</label><input name="href" value="' + esc(btn.href) + '"></div>';
+        html += '</div>';
+      });
+    }
+    html += '<button class="add-btn" onclick="addIndexItem(\'gate_buttons\')">+ ボタンを追加</button>';
+
+    // ショップカード
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">SHOP CARDS</h2>';
+    if (data.shop_cards) {
+      data.shop_cards.forEach(function(card, i) {
+        html += '<div class="editor-section" data-type="shop_card" data-index="' + i + '">';
+        html += '<h3>CARD: ' + esc(card.en).replace(/\n/g, ' ') + '<button onclick="removeIndexItem(\'shop_cards\',' + i + ')">削除</button></h3>';
+        if (card.image) {
+          html += '<div style="margin-bottom:12px;width:200px;height:130px;background-image:url(\'' + esc(card.image) + '\');background-size:cover;background-position:' + (card.position || 'center') + ';border:1px solid rgba(255,255,255,0.1)"></div>';
+        }
+        html += '<div class="field-row">';
+        html += '<div class="field"><label>英語テキスト</label><textarea name="en" rows="2">' + esc(card.en) + '</textarea></div>';
+        html += '<div class="field"><label>日本語テキスト</label><textarea name="ja" rows="2">' + esc(card.ja) + '</textarea></div>';
+        html += '</div>';
+        html += '<div class="field"><label>画像URL</label><input name="image" value="' + esc(card.image) + '" class="img-url-input"></div>';
+        html += '<div class="field"><label>画像ファイルを選択</label><input type="file" accept="image/*" class="img-file-input" data-index="' + i + '" style="font-size:12px;color:rgba(255,255,255,0.4)"></div>';
+        html += '<div class="field-row">';
+        html += '<div class="field"><label>画像位置（CSS）</label><input name="position" value="' + esc(card.position || 'center') + '"></div>';
+        html += '<div class="field"><label>リンク先</label><input name="href" value="' + esc(card.href) + '"></div>';
+        html += '</div>';
+        html += '</div>';
+      });
+    }
+    html += '<button class="add-btn" onclick="addIndexItem(\'shop_cards\')">+ カードを追加</button>';
+
+    editor.innerHTML = html;
+
+    // 背景画像ファイル選択
+    var bgFileInput = editor.querySelector('.idx-bg-file');
+    if (bgFileInput) {
+      bgFileInput.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var bgInput = editor.querySelector('[name="bg_image"]');
+        bgInput.value = 'images/' + file.name;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var preview = editor.querySelector('div[style*="max-width:400px"]');
+          if (preview) preview.style.backgroundImage = 'url(' + ev.target.result + ')';
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // カード画像ファイル選択
+    editor.querySelectorAll('.img-file-input').forEach(function(input) {
+      input.addEventListener('change', handleImageSelect);
+    });
+  }
+
+  window.addIndexItem = function(key) {
+    if (key === 'gate_buttons') {
+      if (!pageData.gate_buttons) pageData.gate_buttons = [];
+      pageData.gate_buttons.push({ id:'new', type:'link', en:'', ja:'', loc:'', href:'' });
+    } else if (key === 'shop_cards') {
+      if (!pageData.shop_cards) pageData.shop_cards = [];
+      pageData.shop_cards.push({ id:'new', en:'', ja:'', image:'', position:'center', href:'' });
+    }
+    renderIndexEditor(pageData);
+  };
+
+  window.removeIndexItem = function(key, index) {
+    if (!confirm('削除しますか？')) return;
+    pageData[key].splice(index, 1);
+    renderIndexEditor(pageData);
+  };
+
+  // ====== FOOTER エディタ ======
+  function renderFooterEditor(data) {
+    var editor = document.getElementById('editorArea');
+    data.links = data.links || [];
+    data.location_top = data.location_top || '';
+    data.location_shop = data.location_shop || '';
+    data.instagram_url = data.instagram_url || '';
+    data.instagram_label = data.instagram_label || '';
+    var html = '';
+
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin-bottom:16px;letter-spacing:0.1em">FOOTER LINKS</h2>';
+    if (data.links) {
+      data.links.forEach(function(link, i) {
+        html += '<div class="editor-section" data-type="footer_link" data-index="' + i + '">';
+        html += '<h3>LINK: ' + esc(link.label) + '<button onclick="removeFooterLink(' + i + ')">削除</button></h3>';
+        html += '<div class="field-row">';
+        html += '<div class="field"><label>表示テキスト</label><input name="label" value="' + esc(link.label) + '"></div>';
+        html += '<div class="field"><label>リンク先URL</label><input name="href" value="' + esc(link.href) + '"></div>';
+        html += '</div>';
+        html += '</div>';
+      });
+    }
+    html += '<button class="add-btn" onclick="addFooterLink()">+ リンクを追加</button>';
+
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">LOCATION TEXT</h2>';
+    html += '<div class="editor-section">';
+    html += '<h3>表示テキスト</h3>';
+    html += '<div class="field"><label>トップ画面の場所テキスト</label><input name="location_top" value="' + esc(data.location_top) + '"></div>';
+    html += '<div class="field"><label>SHOP画面の場所テキスト</label><input name="location_shop" value="' + esc(data.location_shop) + '"></div>';
+    html += '</div>';
+
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">INSTAGRAM</h2>';
+    html += '<div class="editor-section">';
+    html += '<h3>SNSリンク</h3>';
+    html += '<div class="field"><label>Instagram URL</label><input name="instagram_url" value="' + esc(data.instagram_url) + '"></div>';
+    html += '<div class="field"><label>表示テキスト</label><input name="instagram_label" value="' + esc(data.instagram_label) + '"></div>';
+    html += '</div>';
+
+    editor.innerHTML = html;
+  }
+
+  window.addFooterLink = function() {
+    if (!pageData.links) pageData.links = [];
+    pageData.links.push({ id:'new', label:'', href:'' });
+    renderFooterEditor(pageData);
+  };
+  window.removeFooterLink = function(index) {
+    if (!confirm('削除しますか？')) return;
+    pageData.links.splice(index, 1);
+    renderFooterEditor(pageData);
+  };
+
+  // ====== PASSWORD エディタ ======
+  function renderPasswordEditor() {
+    var editor = document.getElementById('editorArea');
+    var html = '';
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin-bottom:16px;letter-spacing:0.1em">PASSWORD CHANGE</h2>';
+    html += '<div class="editor-section">';
+    html += '<h3>パスワード変更</h3>';
+    html += '<div class="field"><label>現在のパスワード</label><input type="password" id="pw_current" autocomplete="off"></div>';
+    html += '<div class="field"><label>新しいパスワード</label><input type="password" id="pw_new" autocomplete="off"></div>';
+    html += '<div class="field"><label>新しいパスワード（確認）</label><input type="password" id="pw_confirm" autocomplete="off"></div>';
+    html += '<button class="save-btn" id="changePwBtn" style="margin-top:8px">パスワードを変更</button>';
+    html += '<p id="pw_msg" style="margin-top:12px;font-size:13px;display:none"></p>';
+    html += '</div>';
+    editor.innerHTML = html;
+
+    document.getElementById('changePwBtn').addEventListener('click', function() {
+      var cur = document.getElementById('pw_current').value;
+      var nw = document.getElementById('pw_new').value;
+      var conf = document.getElementById('pw_confirm').value;
+      var msg = document.getElementById('pw_msg');
+      var currentPw = localStorage.getItem('fp_admin_password') || '0000';
+
+      if (cur !== currentPw) {
+        msg.style.display = 'block'; msg.style.color = '#e74c3c'; msg.textContent = '現在のパスワードが正しくありません';
+        return;
+      }
+      if (!nw || nw.length < 4) {
+        msg.style.display = 'block'; msg.style.color = '#e74c3c'; msg.textContent = '新しいパスワードは4文字以上で入力してください';
+        return;
+      }
+      if (nw !== conf) {
+        msg.style.display = 'block'; msg.style.color = '#e74c3c'; msg.textContent = '新しいパスワードが一致しません';
+        return;
+      }
+      localStorage.setItem('fp_admin_password', nw);
+      sessionStorage.setItem('fp_admin_pw', nw);
+      msg.style.display = 'block'; msg.style.color = '#27ae60'; msg.textContent = 'パスワードを変更しました';
+      document.getElementById('pw_current').value = '';
+      document.getElementById('pw_new').value = '';
+      document.getElementById('pw_confirm').value = '';
+    });
+  }
+
+  // ====== エディタ描画（通常ページ） ======
+  function renderEditor(page, data) {
+    var editor = document.getElementById('editorArea');
+    var html = '';
+
+    // セクション
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin-bottom:16px;letter-spacing:0.1em">SECTIONS</h2>';
+    if (data.sections && data.sections.length > 0) {
+      data.sections.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+      data.sections.forEach(function(sec, i) {
+        html += renderSectionEditor(sec, i);
+      });
+    } else {
+      html += '<p style="color:rgba(255,255,255,0.25);font-size:12px;margin-bottom:16px">セクションデータがありません</p>';
+    }
+    html += '<button class="add-btn" onclick="addSection()">+ セクションを追加</button>';
+
+    // プラン
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">PLANS</h2>';
+    if (data.plans && data.plans.length > 0) {
+      data.plans.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+      data.plans.forEach(function(plan, i) {
+        html += renderPlanEditor(plan, i);
+      });
+    } else {
+      html += '<p style="color:rgba(255,255,255,0.25);font-size:12px;margin-bottom:16px">プランデータがありません</p>';
+    }
+    html += '<button class="add-btn" onclick="addPlan()">+ プランを追加</button>';
+
+    // オプション
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">OPTIONS</h2>';
+    if (data.options && data.options.length > 0) {
+      data.options.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+      data.options.forEach(function(opt, i) {
+        html += renderOptionEditor(opt, i);
+      });
+    } else {
+      html += '<p style="color:rgba(255,255,255,0.25);font-size:12px;margin-bottom:16px">オプションデータがありません</p>';
+    }
+    html += '<button class="add-btn" onclick="addOption()">+ オプションを追加</button>';
+
+    // 画像
+    html += '<h2 style="font-family:Bebas Neue,sans-serif;font-size:18px;color:rgba(255,255,255,0.5);margin:40px 0 16px;letter-spacing:0.1em">IMAGES</h2>';
+    if (data.images && data.images.length > 0) {
+      data.images.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+      data.images.forEach(function(img, i) {
+        html += renderImageEditor(img, i);
+      });
+    } else {
+      html += '<p style="color:rgba(255,255,255,0.25);font-size:12px;margin-bottom:16px">画像データがありません</p>';
+    }
+    html += '<button class="add-btn" onclick="addImage()">+ 画像を追加</button>';
+
+    editor.innerHTML = html;
+
+    // ファイル選択のイベントを設定
+    document.querySelectorAll('.img-file-input').forEach(function(input) {
+      input.addEventListener('change', handleImageSelect);
+    });
+  }
+
+  function renderSectionEditor(sec, index) {
+    return '<div class="editor-section" data-type="section" data-index="' + index + '">' +
+      '<h3>SECTION: ' + (sec.section_key || 'new') +
+      '<button onclick="removeItem(\'section\',' + index + ')">削除</button></h3>' +
+      '<div class="field"><label>セクションキー</label><input name="section_key" value="' + esc(sec.section_key) + '"></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>ラベル（日本語）</label><input name="label_ja" value="' + esc(sec.label_ja) + '"></div>' +
+        '<div class="field"><label>ラベル（英語）</label><input name="label_en" value="' + esc(sec.label_en) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>タイトル</label><input name="title" value="' + esc(sec.title) + '"></div>' +
+      '<div class="field"><label>本文1</label><textarea name="body" rows="3">' + esc(sec.body) + '</textarea></div>' +
+      '<div class="field"><label>本文2</label><textarea name="body2" rows="3">' + esc(sec.body2) + '</textarea></div>' +
+      '<div class="field"><label>表示順</label><input name="order" type="number" value="' + (sec.order || 0) + '" style="width:80px"></div>' +
+    '</div>';
+  }
+
+  function renderPlanEditor(plan, index) {
+    return '<div class="editor-section" data-type="plan" data-index="' + index + '">' +
+      '<h3>PLAN: ' + (plan.name_en || 'new') +
+      '<button onclick="removeItem(\'plan\',' + index + ')">削除</button></h3>' +
+      '<div class="field"><label>プランキー</label><input name="plan_key" value="' + esc(plan.plan_key) + '"></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>名前（英語）</label><input name="name_en" value="' + esc(plan.name_en) + '"></div>' +
+        '<div class="field"><label>名前（日本語）</label><input name="name_ja" value="' + esc(plan.name_ja) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>価格</label><input name="price" value="' + esc(plan.price) + '"></div>' +
+      '<div class="field"><label>説明1</label><textarea name="description" rows="3">' + esc(plan.description) + '</textarea></div>' +
+      '<div class="field"><label>説明2</label><textarea name="description2" rows="2">' + esc(plan.description2) + '</textarea></div>' +
+      '<div class="field"><label>タグ（カンマ区切り）</label><input name="tags" value="' + esc(plan.tags) + '"></div>' +
+      '<div class="field"><label>表示順</label><input name="order" type="number" value="' + (plan.order || 0) + '" style="width:80px"></div>' +
+    '</div>';
+  }
+
+  function renderOptionEditor(opt, index) {
+    return '<div class="editor-section" data-type="option" data-index="' + index + '">' +
+      '<h3>OPTION: ' + (opt.item_name || 'new') +
+      '<button onclick="removeItem(\'option\',' + index + ')">削除</button></h3>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>グループキー</label><input name="group_key" value="' + esc(opt.group_key) + '"></div>' +
+        '<div class="field"><label>グループ名（英語）</label><input name="group_name_en" value="' + esc(opt.group_name_en) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>グループ名（日本語）</label><input name="group_name_ja" value="' + esc(opt.group_name_ja) + '"></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>アイテム名</label><input name="item_name" value="' + esc(opt.item_name) + '"></div>' +
+        '<div class="field"><label>価格</label><input name="price" value="' + esc(opt.price) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>表示順</label><input name="order" type="number" value="' + (opt.order || 0) + '" style="width:80px"></div>' +
+    '</div>';
+  }
+
+  function renderImageEditor(img, index) {
+    var preview = '';
+    if (img.image_url) {
+      preview = '<div style="margin-bottom:12px;width:200px;height:130px;background-image:url(\'' + esc(img.image_url) + '\');background-size:cover;background-position:' + (img.position || 'center') + ';border:1px solid rgba(255,255,255,0.1)"></div>';
+    }
+    return '<div class="editor-section" data-type="image" data-index="' + index + '">' +
+      '<h3>IMAGE: ' + (img.section_key || 'new') +
+      '<button onclick="removeItem(\'image\',' + index + ')">削除</button></h3>' +
+      preview +
+      '<div class="field-row">' +
+        '<div class="field"><label>セクションキー</label><input name="section_key" value="' + esc(img.section_key) + '"></div>' +
+        '<div class="field"><label>ALTテキスト</label><input name="alt" value="' + esc(img.alt) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>画像URL（imagesフォルダのパス or 外部URL）</label><input name="image_url" value="' + esc(img.image_url) + '" class="img-url-input"></div>' +
+      '<div class="field"><label>画像ファイルを選択（imagesフォルダに保存済みの場合は不要）</label>' +
+        '<input type="file" accept="image/*" class="img-file-input" data-index="' + index + '" style="font-size:12px;color:rgba(255,255,255,0.4)">' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>表示位置（CSS）</label><input name="position" value="' + esc(img.position || 'center') + '" placeholder="center"></div>' +
+        '<div class="field"><label>表示順</label><input name="order" type="number" value="' + (img.order || 0) + '" style="width:80px"></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function handleImageSelect(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var index = parseInt(e.target.dataset.index);
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      // プレビュー更新
+      var section = e.target.closest('.editor-section');
+      var urlInput = section.querySelector('.img-url-input');
+      // ファイル名をimagesパスとして設定
+      urlInput.value = 'images/' + file.name;
+      // プレビュー表示
+      var existingPreview = section.querySelector('div[style*="background-image"]');
+      if (existingPreview) {
+        existingPreview.style.backgroundImage = 'url(' + ev.target.result + ')';
+      } else {
+        var preview = document.createElement('div');
+        preview.style.cssText = 'margin-bottom:12px;width:200px;height:130px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.1)';
+        preview.style.backgroundImage = 'url(' + ev.target.result + ')';
+        section.querySelector('h3').after(preview);
+      }
+      showStatus('画像パスを設定しました。imagesフォルダにファイルがあることを確認してください。', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function esc(val) {
+    if (val === undefined || val === null) return '';
+    return String(val).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ====== 追加・削除 ======
+  window.addSection = function() {
+    if (!pageData.sections) pageData.sections = [];
+    pageData.sections.push({ section_key: 'new_section', label_ja: '', label_en: '', title: '', body: '', body2: '', order: pageData.sections.length });
+    renderEditor(currentPage, pageData);
+  };
+  window.addPlan = function() {
+    if (!pageData.plans) pageData.plans = [];
+    pageData.plans.push({ plan_key: 'new_plan', name_en: '', name_ja: '', price: '', description: '', description2: '', tags: '', order: pageData.plans.length });
+    renderEditor(currentPage, pageData);
+  };
+  window.addOption = function() {
+    if (!pageData.options) pageData.options = [];
+    pageData.options.push({ group_key: '', group_name_en: '', group_name_ja: '', item_name: '', price: '', order: pageData.options.length });
+    renderEditor(currentPage, pageData);
+  };
+  window.addImage = function() {
+    if (!pageData.images) pageData.images = [];
+    pageData.images.push({ section_key: 'new_image', image_url: '', alt: '', position: 'center', order: pageData.images.length });
+    renderEditor(currentPage, pageData);
+  };
+  window.removeItem = function(type, index) {
+    if (!confirm('削除しますか？')) return;
+    var map = { section: 'sections', plan: 'plans', option: 'options', image: 'images' };
+    pageData[map[type]].splice(index, 1);
+    renderEditor(currentPage, pageData);
+  };
+
+  // ====== 保存 ======
+  document.getElementById('saveBtn').addEventListener('click', function() {
+    var btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.textContent = '保存中...';
+
+    var saveData;
+    if (currentPage === 'index') {
+      collectIndexData();
+      saveData = pageData;
+    } else if (currentPage === 'footer') {
+      collectFooterData();
+      saveData = pageData;
+    } else {
+      collectFormData();
+      saveData = {
+        sections: pageData.sections,
+        plans: pageData.plans,
+        options: pageData.options,
+        images: pageData.images
+      };
+    }
+    localStorage.setItem('fp_cms_' + currentPage, JSON.stringify(saveData));
+
+    // 特殊ページはローカルのみ保存
+    if (specialPages.indexOf(currentPage) >= 0) {
+      btn.disabled = false;
+      btn.textContent = '保存する';
+      showStatus('保存しました', 'success');
+      return;
+    }
+
+    // GASにも保存を試みる（失敗してもOK）
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'savePageData',
+        password: password,
+        page: currentPage,
+        data: saveData
+      })
+    })
+    .then(function() {
+      btn.disabled = false;
+      btn.textContent = '保存する';
+      showStatus('保存しました（ローカル + GAS）', 'success');
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = '保存する';
+      showStatus('保存しました（ローカル）', 'success');
+    });
+  });
+
+  function collectIndexData() {
+    var editor = document.getElementById('editorArea');
+    pageData.bg_image = (editor.querySelector('[name="bg_image"]') || {}).value || '';
+    pageData.tagline = (editor.querySelector('[name="tagline"]') || {}).value || '';
+
+    pageData.gate_buttons = [];
+    editor.querySelectorAll('[data-type="gate_button"]').forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input,select,textarea').forEach(function(inp) {
+        if (inp.name) obj[inp.name] = inp.value;
+      });
+      obj.id = obj.en ? obj.en.toLowerCase().replace(/[^a-z]/g, '_') : 'btn';
+      pageData.gate_buttons.push(obj);
+    });
+
+    pageData.shop_cards = [];
+    editor.querySelectorAll('[data-type="shop_card"]').forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input,select,textarea').forEach(function(inp) {
+        if (inp.name && inp.type !== 'file') obj[inp.name] = inp.value;
+      });
+      obj.id = obj.en ? obj.en.toLowerCase().replace(/[^a-z]/g, '_') : 'card';
+      pageData.shop_cards.push(obj);
+    });
+  }
+
+  function collectFooterData() {
+    var editor = document.getElementById('editorArea');
+    pageData.location_top = (editor.querySelector('[name="location_top"]') || {}).value || '';
+    pageData.location_shop = (editor.querySelector('[name="location_shop"]') || {}).value || '';
+    pageData.instagram_url = (editor.querySelector('[name="instagram_url"]') || {}).value || '';
+    pageData.instagram_label = (editor.querySelector('[name="instagram_label"]') || {}).value || '';
+
+    pageData.links = [];
+    editor.querySelectorAll('[data-type="footer_link"]').forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input').forEach(function(inp) {
+        if (inp.name) obj[inp.name] = inp.value;
+      });
+      obj.id = obj.label ? obj.label.toLowerCase().replace(/[^a-z]/g, '_') : 'link';
+      pageData.links.push(obj);
+    });
+  }
+
+  function collectFormData() {
+    var sections = document.querySelectorAll('[data-type="section"]');
+    pageData.sections = [];
+    sections.forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input,textarea').forEach(function(inp) {
+        obj[inp.name] = inp.value;
+      });
+      obj.page = currentPage;
+      obj.id = obj.section_key;
+      pageData.sections.push(obj);
+    });
+
+    var plans = document.querySelectorAll('[data-type="plan"]');
+    pageData.plans = [];
+    plans.forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input,textarea').forEach(function(inp) {
+        obj[inp.name] = inp.value;
+      });
+      obj.page = currentPage;
+      obj.id = obj.plan_key;
+      pageData.plans.push(obj);
+    });
+
+    var options = document.querySelectorAll('[data-type="option"]');
+    pageData.options = [];
+    options.forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input,textarea').forEach(function(inp) {
+        obj[inp.name] = inp.value;
+      });
+      obj.page = currentPage;
+      obj.id = obj.group_key + '_' + obj.item_name;
+      pageData.options.push(obj);
+    });
+
+    var images = document.querySelectorAll('[data-type="image"]');
+    pageData.images = [];
+    images.forEach(function(el) {
+      var obj = {};
+      el.querySelectorAll('input:not([type="file"]),textarea').forEach(function(inp) {
+        if (inp.name) obj[inp.name] = inp.value;
+      });
+      obj.page = currentPage;
+      obj.id = obj.section_key + '_' + (obj.order || 0);
+      pageData.images.push(obj);
+    });
+  }
+
+  function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.textContent = msg;
+    el.className = 'status-msg show ' + type;
+    setTimeout(function() { el.className = 'status-msg'; }, 3000);
+  }
+})();
+</script>
+</body>
+</html>

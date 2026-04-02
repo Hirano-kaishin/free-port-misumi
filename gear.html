@@ -135,10 +135,11 @@
         <div class="page-hero">
             <div
                 class="hero-bg"
+                data-cms-image="gear_hero"
                 style="background-image: url(&quot;images/shop-hero.jpg&quot;)"
             ></div>
             <div class="hero-content">
-                <h1 class="hero-title" style="text-align: right">
+                <h1 class="hero-title" style="text-align: right" data-cms-section="gear_hero" data-cms-field="title">
                     CAMP<br />GEAR
                 </h1>
             </div>
@@ -156,8 +157,8 @@
                     "
                 >
                     <div class="reveal">
-                        <div class="gear-intro-label">ブランドセレクト</div>
-                        <div class="gear-intro-title">BRAND SELECT</div>
+                        <div class="gear-intro-label" data-cms-section="gear_intro" data-cms-field="label_ja">ブランドセレクト</div>
+                        <div class="gear-intro-title" data-cms-section="gear_intro" data-cms-field="label_en">BRAND SELECT</div>
                         <p
                             style="
                                 font-size: 13px;
@@ -166,6 +167,7 @@
                                 font-weight: 300;
                                 margin-bottom: 12px;
                             "
+                            data-cms-section="gear_intro" data-cms-field="body1"
                         >
                             国内外の人気アウトドアブランドからスタッフが厳選したキャンプギアを取り揃えています。海外買い付けによる国内未販売のギアも取り扱っており、ここでしか出会えないアイテムも。
                         </p>
@@ -177,6 +179,7 @@
                                 font-weight: 300;
                                 margin-bottom: 12px;
                             "
+                            data-cms-section="gear_intro" data-cms-field="body2"
                         >
                             チェア、テーブル、調理器具、ランタンなど、実際に手に取ってサイズ感や使い心地をお試しいただけます。
                         </p>
@@ -188,6 +191,7 @@
                                 font-weight: 300;
                                 margin-bottom: 24px;
                             "
+                            data-cms-section="gear_intro" data-cms-field="body3"
                         >
                             キャンプ初心者の方にもスタッフが丁寧にご案内いたしますので、お気軽にご来店ください。
                         </p>
@@ -205,6 +209,7 @@
                     >
                         <div
                             class="img-fill"
+                            data-cms-image="gear_1"
                             style="
                                 grid-column: 1/-1;
                                 height: 240px;
@@ -215,6 +220,7 @@
                         ></div>
                         <div
                             class="img-fill"
+                            data-cms-image="gear_2"
                             style="
                                 height: 180px;
                                 background-image: url(&quot;images/gear-shelf1.jpg&quot;);
@@ -224,6 +230,7 @@
                         ></div>
                         <div
                             class="img-fill"
+                            data-cms-image="gear_3"
                             style="
                                 height: 180px;
                                 background-image: url(&quot;images/gear-shelf2.jpg&quot;);
@@ -346,9 +353,10 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span class="footer-copy">&copy; 2025 FREE PORT.</span>
+                <span class="footer-copy">&copy; 2025 FREE PORT. <a href="admin.html" style="color:rgba(255,255,255,0.1);font-size:10px;text-decoration:none;margin-left:8px">.</a></span>
             </div>
         </footer>
         <script src="js/shared.js"></script>
+        <script src="js/cms-loader.js"></script>
     </body>
 </html>

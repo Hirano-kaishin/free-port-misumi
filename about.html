@@ -73,15 +73,16 @@
         <div class="page-hero">
             <div
                 class="hero-bg"
+                data-cms-image="about_hero"
                 style="
                     background-image: url(&quot;images/IMG_6284.JPG&quot;);
                 "
             ></div>
             <div class="hero-content">
-                <p class="hero-label">
+                <p class="hero-label" data-cms-section="about_hero" data-cms-field="label">
                     <span class="ja">フリーポートについて</span>About Free Port
                 </p>
-                <h1 class="hero-title">COAST<br />MEETS<br />CULTURE</h1>
+                <h1 class="hero-title" data-cms-section="about_hero" data-cms-field="title">COAST<br />MEETS<br />CULTURE</h1>
             </div>
         </div>
 
@@ -96,19 +97,19 @@
                 "
             >
                 <div class="reveal">
-                    <p class="sec-label">
+                    <p class="sec-label" data-cms-section="about_story" data-cms-field="label">
                         <span class="ja">私たちのストーリー</span>Our Story
                     </p>
-                    <h2 class="sec-title" style="color: #faf9f6">
+                    <h2 class="sec-title" style="color: #faf9f6" data-cms-section="about_story" data-cms-field="title">
                         世界遺産の<br />港に佇む
                     </h2>
-                    <p class="sec-body">
+                    <p class="sec-body" data-cms-section="about_story" data-cms-field="body1">
                         世界文化遺産・三角西港のすぐそばに佇む、カフェ&amp;アウトドアショップです。
                     </p>
-                    <p class="sec-body">
+                    <p class="sec-body" data-cms-section="about_story" data-cms-field="body2">
                         歴史ある港町の風景を眺めながら、スペシャルティコーヒーとアウトドアの心地よさを同時に楽しめる空間をつくりました。
                     </p>
-                    <p class="sec-body">
+                    <p class="sec-body" data-cms-section="about_story" data-cms-field="body3">
                         コーヒー、キャンプギア、ビーチでのキャンプやサウナ体験 —
                         日常の境界を越えた自由を、FREE
                         PORTスタイルでお届けします。
@@ -126,6 +127,7 @@
                 >
                     <div
                         class="img-fill"
+                        data-cms-image="about_story_1"
                         style="grid-column: 1/-1; height: 260px"
                     >
                         <img
@@ -133,13 +135,13 @@
                             alt="&#24215;&#33303;"
                         />
                     </div>
-                    <div class="img-fill" style="height: 180px">
+                    <div class="img-fill" data-cms-image="about_story_2" style="height: 180px">
                         <img
                             src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=70"
                             alt="&#12467;&#12540;&#12498;&#12540;"
                         />
                     </div>
-                    <div class="img-fill" style="height: 180px">
+                    <div class="img-fill" data-cms-image="about_story_3" style="height: 180px">
                         <img
                             src="images/IMG_6285.jpg"
                             alt="&#12461;&#12515;&#12531;&#12503;"
@@ -150,12 +152,13 @@
         </section>
 
         <section class="sec sec-mid" style="text-align: center">
-            <p class="sec-label reveal" style="justify-content: center">
+            <p class="sec-label reveal" style="justify-content: center" data-cms-section="about_values" data-cms-field="label">
                 <span class="ja">私たちの価値観</span>Our Values
             </p>
             <h2
                 class="sec-title reveal"
                 style="color: #faf9f6; margin-bottom: 56px"
+                data-cms-section="about_values" data-cms-field="title"
             >
                 THREE PILLARS
             </h2>
@@ -203,6 +206,7 @@
                             color: #faf9f6;
                             margin-bottom: 12px;
                         "
+                        data-cms-section="about_pillar_coffee" data-cms-field="title"
                     >
                         COFFEE
                     </div>
@@ -213,6 +217,7 @@
                             color: rgba(255, 255, 255, 0.5);
                             font-weight: 300;
                         "
+                        data-cms-section="about_pillar_coffee" data-cms-field="body"
                     >
                         世界遺産の港で味わう特別な一杯
                     </p>
@@ -257,6 +262,7 @@
                             color: #faf9f6;
                             margin-bottom: 12px;
                         "
+                        data-cms-section="about_pillar_shop" data-cms-field="title"
                     >
                         SHOP
                     </div>
@@ -267,6 +273,7 @@
                             color: rgba(255, 255, 255, 0.5);
                             font-weight: 300;
                         "
+                        data-cms-section="about_pillar_shop" data-cms-field="body"
                     >
                         キャンプギアやオリジナル雑貨を販売
                     </p>
@@ -311,6 +318,7 @@
                             color: #faf9f6;
                             margin-bottom: 12px;
                         "
+                        data-cms-section="about_pillar_camp" data-cms-field="title"
                     >
                         CAMP &amp; SAUNA
                     </div>
@@ -321,6 +329,7 @@
                             color: rgba(255, 255, 255, 0.5);
                             font-weight: 300;
                         "
+                        data-cms-section="about_pillar_camp" data-cms-field="body"
                     >
                         絶景ビーチとサウナを満喫
                     </p>
@@ -364,9 +373,10 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span class="footer-copy">&copy; 2025 FREE PORT.</span>
+                <span class="footer-copy">&copy; 2025 FREE PORT. <a href="admin.html" style="color:rgba(255,255,255,0.1);font-size:10px;text-decoration:none;margin-left:8px">.</a></span>
                             </div>
         </footer>
         <script src="js/shared.js"></script>
+        <script src="js/cms-loader.js"></script>
     </body>
 </html>
