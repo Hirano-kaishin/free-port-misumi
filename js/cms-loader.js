@@ -4,7 +4,7 @@
 // ====================================================
 
 (function() {
-  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyClKNCA5ABWMG3DswTJdQOUFiYwj5udrbhtJRL-nAdwY_AuV1k4CHacMMdpR_tL1FQ/exec';
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyiMUV8EKyEl6aM_2BukHy2VVQ4CbedYla0ZksXwKhvG6Ilzq4WMs1yASEPHjl4aFxN/exec';
 
   // ページ名を自動判定
   var path = location.pathname.split('/').pop().replace('.html', '') || 'index';
