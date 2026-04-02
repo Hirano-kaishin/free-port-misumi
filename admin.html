@@ -111,8 +111,11 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
     <p style="color:rgba(255,255,255,0.3);font-size:13px">データを読み込み中...</p>
   </div>
 
-  <!-- 保存ボタン -->
-  <button class="save-btn" id="saveBtn" style="display:none">保存する</button>
+  <!-- 保存ボタン + TOPへ戻る -->
+  <div style="display:flex;gap:12px;align-items:center;margin-top:16px">
+    <button class="save-btn" id="saveBtn" style="display:none;margin-top:0">保存する</button>
+    <button class="save-btn" id="scrollTopBtn" style="display:none;margin-top:0;background:transparent;color:var(--rust)" onclick="window.scrollTo({top:0,behavior:'smooth'})">TOP</button>
+  </div>
 </div>
 
 <div class="status-msg" id="statusMsg"></div>
@@ -324,6 +327,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
     var editor = document.getElementById('editorArea');
     editor.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px">データを読み込み中...</p>';
     document.getElementById('saveBtn').style.display = 'none';
+    document.getElementById('scrollTopBtn').style.display = 'none';
 
     // 特殊ページ
     if (specialPages.indexOf(page) >= 0) {
@@ -341,6 +345,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
         if (page === 'index') renderIndexEditor(pageData);
         else if (page === 'footer') renderFooterEditor(pageData);
         document.getElementById('saveBtn').style.display = 'inline-flex';
+        document.getElementById('scrollTopBtn').style.display = 'inline-flex';
       } catch(err) {
         editor.innerHTML = '<p style="color:#e74c3c;font-size:13px">エラー: ' + err.message + '</p>';
         console.error('Admin render error:', err);
@@ -356,6 +361,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
         pageData = JSON.parse(local);
         renderEditor(page, pageData);
         document.getElementById('saveBtn').style.display = 'inline-flex';
+        document.getElementById('scrollTopBtn').style.display = 'inline-flex';
         return;
       } catch(e) {}
     }
@@ -371,12 +377,14 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
         }
         renderEditor(page, pageData);
         document.getElementById('saveBtn').style.display = 'inline-flex';
+        document.getElementById('scrollTopBtn').style.display = 'inline-flex';
       })
       .catch(function() {
         // 3. デフォルトデータ
         pageData = defaultData[page] || { sections:[], plans:[], options:[], images:[] };
         renderEditor(page, pageData);
         document.getElementById('saveBtn').style.display = 'inline-flex';
+        document.getElementById('scrollTopBtn').style.display = 'inline-flex';
       });
   }
 
