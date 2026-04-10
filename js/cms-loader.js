@@ -1,11 +1,11 @@
 // ====================================================
 // FREE PORT CMS Loader
-// 各ページで読み込み、localStorageまたはGASからデータを取得してページに反映
+// 各ページで読み込み、Firestore からデータを取得してページに反映
 // ====================================================
 
-(function() {
-  var GAS_URL = 'https://script.google.com/macros/s/AKfycbyiMUV8EKyEl6aM_2BukHy2VVQ4CbedYla0ZksXwKhvG6Ilzq4WMs1yASEPHjl4aFxN/exec';
+import { loadPageData as firestoreLoad } from './firebase.js';
 
+(function() {
   // ページ名を自動判定
   var path = location.pathname.split('/').pop().replace('.html', '') || 'index';
   var pageName = path;
@@ -23,25 +23,14 @@
   if (!pageMap[pageName]) return;
 
   function loadData() {
-    // 1. localStorageから読み込み
-    var local = localStorage.getItem('fp_cms_' + pageName);
-    if (local) {
-      try {
-        var data = JSON.parse(local);
-        applyData(data);
-        return;
-      } catch(e) {}
-    }
-
-    // 2. GASから読み込み
-    fetch(GAS_URL + '?action=getPageData&page=' + pageName)
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.sections && data.sections.length > 0) {
-          applyData(data);
-        }
-      })
-      .catch(function() {});
+    // Firestoreから読み込み（唯一のデータソース）
+    firestoreLoad(pageName).then(function(fsData) {
+      if (fsData) {
+        applyData(fsData);
+      }
+    }).catch(function(err) {
+      console.error('Firestore接続エラー:', err);
+    });
   }
 
   function applyData(data) {
