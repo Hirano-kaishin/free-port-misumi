@@ -302,8 +302,8 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
     works: {
       sections: [
         { id:'works_hero', section_key:'works_hero', label_ja:'オーダーメイド制作実績', label_en:'Custom Works', title:'CUSTOM WORKS', body:'愛犬や愛猫の写真から、クッション・マグカップ・キーホルダーなど世界にひとつだけのオーダーメイドグッズを制作。お気に入りの一枚が、毎日そばに置けるアイテムに生まれ変わります。', body2:'大切な人へのプレゼントや企業ノベルティ、ネットショップの商品展開、店舗のオーダーメイドグッズなど、さまざまなシーンに合わせたオーダーメイド制作が可能です。', order:1 },
-        { id:'works_case_1', section_key:'works_case_1', label_ja:'', label_en:'', title:'お客様のお写真', body:'ハート型クッション', body2:'', order:2 },
-        { id:'works_case_2', section_key:'works_case_2', label_ja:'', label_en:'', title:'お客様のお写真', body:'ダイカットクッション', body2:'', order:3 },
+        { id:'works_case_1', section_key:'works_case_1', label_ja:'', label_en:'', title:'お客様のお写真', body:'オリジナルクッション', body2:'', order:2 },
+        { id:'works_case_2', section_key:'works_case_2', label_ja:'', label_en:'', title:'お客様のお写真', body:'オリジナルクッション', body2:'', order:3 },
         { id:'works_gallery', section_key:'works_gallery', label_ja:'', label_en:'', title:'GALLERY', body:'これまでの制作実績をご紹介します。', body2:'', order:4 },
         { id:'works_cta', section_key:'works_cta', label_ja:'', label_en:'', title:'', body:'写真1枚からオーダー可能です。お気軽にご相談ください。', body2:'', order:5 }
       ],
@@ -752,8 +752,11 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   }
 
   function renderSectionEditor(sec, index) {
+    var preview = sec.title || sec.body || '';
+    if (preview.length > 40) preview = preview.substring(0, 40) + '…';
+    var previewHtml = preview ? '<span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:normal;margin-left:10px">（' + esc(preview) + '）</span>' : '';
     return '<div class="editor-section" data-type="section" data-index="' + index + '">' +
-      '<h3>SECTION: ' + (sec.section_key || 'new') +
+      '<h3>SECTION: ' + (sec.section_key || 'new') + previewHtml +
       '<button onclick="removeItem(\'section\',' + index + ')">削除</button></h3>' +
       '<div class="field"><label>セクションキー</label><input name="section_key" value="' + esc(sec.section_key) + '"></div>' +
       '<div class="field-row">' +
