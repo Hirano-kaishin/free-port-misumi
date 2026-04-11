@@ -221,10 +221,19 @@ import { loadPageData as firestoreLoad, loadImageBlob } from './firebase.js?v=20
         var container = galleryKeys[k];
         container.innerHTML = '';
         matched.forEach(function(img) {
+          var fig = document.createElement('figure');
+          fig.style.margin = '0';
+          fig.style.display = 'flex';
+          fig.style.flexDirection = 'column';
           var el = document.createElement('img');
           el.src = img.image_url;
           el.alt = img.alt || '';
-          container.appendChild(el);
+          fig.appendChild(el);
+          var cap = document.createElement('figcaption');
+          cap.textContent = img.alt || '';
+          cap.style.cssText = 'font-size:11px;color:rgba(255,255,255,0.6);text-align:center;margin-top:6px;line-height:1.4;font-weight:300;min-height:1em';
+          fig.appendChild(cap);
+          container.appendChild(fig);
         });
       });
     }
