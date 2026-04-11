@@ -97,6 +97,8 @@ img{display:block;width:100%;object-fit:cover}
   .site-header{padding:0 20px;height:56px}
   .h-nav{display:none}
   .h-menu-btn{display:flex!important}
+  .h-back-group{margin-right:8px;gap:6px}
+  .h-back-btn{flex:0 0 auto;padding:5px 8px;font-size:10px;letter-spacing:0.08em;gap:3px}
   .h-nav.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;bottom:0;background:#0e0e0e;padding:40px 24px;gap:0;z-index:100;overflow-y:auto}
   .h-nav.open li{border-bottom:1px solid rgba(255,255,255,0.06)}
   .h-nav.open a{padding:18px 0;font-size:14px;letter-spacing:0.18em;flex-direction:row;gap:10px;align-items:center}
