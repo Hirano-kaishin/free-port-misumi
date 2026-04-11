@@ -533,6 +533,7 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   }
 
   window.addIndexItem = function(key) {
+    collectIndexData();
     if (key === 'gate_buttons') {
       if (!pageData.gate_buttons) pageData.gate_buttons = [];
       pageData.gate_buttons.push({ id:'new', type:'link', en:'', ja:'', loc:'', href:'' });
@@ -545,6 +546,7 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
 
   window.removeIndexItem = function(key, index) {
     if (!confirm('削除しますか？')) return;
+    collectIndexData();
     pageData[key].splice(index, 1);
     renderIndexEditor(pageData);
   };
@@ -591,12 +593,14 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   }
 
   window.addFooterLink = function() {
+    collectFooterData();
     if (!pageData.links) pageData.links = [];
     pageData.links.push({ id:'new', label:'', href:'' });
     renderFooterEditor(pageData);
   };
   window.removeFooterLink = function(index) {
     if (!confirm('削除しますか？')) return;
+    collectFooterData();
     pageData.links.splice(index, 1);
     renderFooterEditor(pageData);
   };
@@ -829,22 +833,27 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   }
 
   // ====== 追加・削除 ======
+  // 現在の DOM 入力値を pageData に取り込んでから再描画しないと、入力中の値が消える
   window.addSection = function() {
+    collectFormData();
     if (!pageData.sections) pageData.sections = [];
     pageData.sections.push({ section_key: 'new_section', label_ja: '', label_en: '', title: '', body: '', body2: '', order: pageData.sections.length });
     renderEditor(currentPage, pageData);
   };
   window.addPlan = function() {
+    collectFormData();
     if (!pageData.plans) pageData.plans = [];
     pageData.plans.push({ plan_key: 'new_plan', name_en: '', name_ja: '', price: '', description: '', description2: '', tags: '', order: pageData.plans.length });
     renderEditor(currentPage, pageData);
   };
   window.addOption = function() {
+    collectFormData();
     if (!pageData.options) pageData.options = [];
     pageData.options.push({ group_key: '', group_name_en: '', group_name_ja: '', item_name: '', price: '', order: pageData.options.length });
     renderEditor(currentPage, pageData);
   };
   window.addImage = function() {
+    collectFormData();
     if (!pageData.images) pageData.images = [];
     // 最後の画像の section_key を引き継ぐ（ギャラリー追加時に自動で同じキーになる）
     var lastKey = 'new_image';
@@ -857,6 +866,7 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   };
   window.removeItem = function(type, index) {
     if (!confirm('削除しますか？')) return;
+    collectFormData();
     var map = { section: 'sections', plan: 'plans', option: 'options', image: 'images' };
     pageData[map[type]].splice(index, 1);
     renderEditor(currentPage, pageData);
