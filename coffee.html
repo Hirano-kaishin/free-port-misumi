@@ -144,7 +144,7 @@
                     display: grid;
                     grid-template-columns: 1fr 1fr;
                     gap: 60px;
-                    align-items: start;
+                    align-items: stretch;
                 "
             >
                 <div class="reveal">
@@ -338,16 +338,53 @@
                     </div>
                 </div>
                 <div
-                    class="reveal reveal-d1 img-fill"
-                    data-cms-image="coffee_intro_1"
+                    class="reveal reveal-d1"
                     style="
-                        height: 560px;
-                        min-height: 300px;
-                        background-image: url(&quot;images/ChatGPT Image 2026年3月31日 16_02_15.png&quot;);
-                        background-size: cover;
-                        background-position: center;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        grid-template-rows: 1.3fr 1fr;
+                        gap: 14px;
+                        min-height: 680px;
+                        height: 100%;
                     "
-                ></div>
+                >
+                    <div
+                        class="img-fill"
+                        data-cms-image="coffee_intro_1"
+                        style="
+                            grid-column: 1 / -1;
+                            grid-row: 1;
+                            background-image: url(&quot;images/ChatGPT Image 2026年3月31日 16_02_15.png&quot;);
+                            background-size: cover;
+                            background-position: center;
+                            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+                        "
+                    ></div>
+                    <div
+                        class="img-fill"
+                        data-cms-image="coffee_intro_2"
+                        style="
+                            grid-column: 1;
+                            grid-row: 2;
+                            background-image: url(&quot;images/coffee-cups-hibi.jpg&quot;);
+                            background-size: cover;
+                            background-position: center;
+                            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+                        "
+                    ></div>
+                    <div
+                        class="img-fill"
+                        data-cms-image="coffee_intro_3"
+                        style="
+                            grid-column: 2;
+                            grid-row: 2;
+                            background-image: url(&quot;images/coffee-beans.jpg&quot;);
+                            background-size: cover;
+                            background-position: center;
+                            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+                        "
+                    ></div>
+                </div>
             </div>
         </section>
 

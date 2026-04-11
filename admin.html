@@ -223,13 +223,15 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
         { id:'sauna_poncho', group_key:'sauna_included', group_name_en:'', group_name_ja:'', item_name:'オリジナルポンチョ＆ハット レンタル', price:'500円', order:4 }
       ],
       images: [
-        { id:'camp_stay_1', section_key:'camp_stay', image_url:'images/IMG_6236 (1).JPG', alt:'ウッドデッキ', position:'center 60%', order:1 },
+        { id:'camp_stay_1', section_key:'camp_stay', image_url:'images/camp-deck-wide.jpg', alt:'ウッドデッキ', position:'center 60%', order:1 },
         { id:'camp_stay_2', section_key:'camp_stay', image_url:'images/IMG_6282.jpg', alt:'キャンプ', position:'center', order:2 },
         { id:'camp_stay_3', section_key:'camp_stay', image_url:'images/IMG_6293.jpg', alt:'キャンプ', position:'center', order:3 },
         { id:'sauna_1', section_key:'sauna_beach', image_url:'images/IMG_6286.jpg', alt:'サウナ', position:'center', order:1 },
         { id:'sauna_2', section_key:'sauna_beach', image_url:'images/IMG_6288.JPG', alt:'カヤック夕日', position:'center', order:2 },
         { id:'sauna_3', section_key:'sauna_beach', image_url:'images/IMG_6229 (1).JPG', alt:'ビーチ夕日', position:'center', order:3 },
-        { id:'sauna_4', section_key:'sauna_beach', image_url:'images/IMG_6238.JPG', alt:'ウッドデッキ夜', position:'center 60%', order:4 }
+        { id:'sauna_4', section_key:'sauna_beach', image_url:'images/IMG_6238.JPG', alt:'ウッドデッキ夜', position:'center 60%', order:4 },
+        { id:'sauna_5', section_key:'sauna_beach', image_url:'images/sauna-bath-interior.jpg', alt:'バレルサウナ', position:'right center', order:5 },
+        { id:'sauna_6', section_key:'sauna_beach', image_url:'images/sauna-ocean-view.jpg', alt:'海を望むキャンプサイト', position:'center', order:6 }
       ]
     },
     coffee: {
@@ -246,9 +248,11 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
       options: [],
       images: [
         { id:'coffee_hero', section_key:'coffee_hero', image_url:'images/coffee-hero.jpg', alt:'コーヒースタンド', position:'center', order:1 },
-        { id:'coffee_intro_1', section_key:'coffee_intro_1', image_url:'images/coffee-hero.jpg', alt:'コーヒー', position:'center', order:2 },
-        { id:'coffee_view', section_key:'coffee_view', image_url:'images/coffee-view.jpg', alt:'三角西港の景色', position:'center', order:3 },
-        { id:'popup_1', section_key:'popup_1', image_url:'images/popup-space.jpg', alt:'ポップアップスペース', position:'center', order:4 }
+        { id:'coffee_intro_1', section_key:'coffee_intro_1', image_url:'images/ChatGPT Image 2026年3月31日 16_02_15.png', alt:'ハンドドリップコーヒー', position:'center', order:2 },
+        { id:'coffee_intro_2', section_key:'coffee_intro_2', image_url:'images/coffee-cups-hibi.jpg', alt:'hibiコーヒーカップ', position:'center', order:3 },
+        { id:'coffee_intro_3', section_key:'coffee_intro_3', image_url:'images/coffee-beans.jpg', alt:'コーヒー豆', position:'center', order:4 },
+        { id:'coffee_view', section_key:'coffee_view', image_url:'images/coffee-view.jpg', alt:'三角西港の景色', position:'center', order:5 },
+        { id:'popup_1', section_key:'popup_1', image_url:'images/popup-space.jpg', alt:'ポップアップスペース', position:'center', order:6 }
       ]
     },
     gear: {
@@ -360,6 +364,21 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
       // Firestoreにデータがあればそれを使用、なければデフォルトデータ
       if (fsData) {
         pageData = fsData;
+        // デフォルトに存在するが Firestore に無い項目をマージ（HTML 側で追加された新しい画像枠などを検出）
+        var defaults = defaultData[page];
+        if (defaults) {
+          ['sections','plans','options','images'].forEach(function(key) {
+            if (!Array.isArray(defaults[key])) return;
+            if (!Array.isArray(pageData[key])) pageData[key] = [];
+            var existingIds = {};
+            pageData[key].forEach(function(item) { if (item && item.id) existingIds[item.id] = true; });
+            defaults[key].forEach(function(item) {
+              if (item && item.id && !existingIds[item.id]) {
+                pageData[key].push(JSON.parse(JSON.stringify(item)));
+              }
+            });
+          });
+        }
       } else {
         pageData = defaultData[page] ? JSON.parse(JSON.stringify(defaultData[page])) : { sections:[], plans:[], options:[], images:[] };
       }
