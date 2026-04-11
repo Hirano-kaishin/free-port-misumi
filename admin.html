@@ -116,9 +116,10 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
   </div>
 
   <!-- 保存ボタン + TOPへ戻る -->
-  <div style="display:flex;gap:12px;align-items:center;margin-top:16px">
+  <div style="display:flex;gap:12px;align-items:center;margin-top:16px;flex-wrap:wrap">
     <button class="save-btn" id="saveBtn" style="display:none;margin-top:0">保存する</button>
     <button class="save-btn" id="scrollTopBtn" style="display:none;margin-top:0;background:transparent;color:var(--rust)" onclick="window.scrollTo({top:0,behavior:'smooth'})">TOP</button>
+    <button class="save-btn" id="resetBtn" style="display:none;margin-top:0;background:transparent;color:#e74c3c;border-color:#e74c3c">デフォルトに戻す</button>
   </div>
 </div>
 
@@ -418,10 +419,23 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
       else renderEditor(page, pageData);
       document.getElementById('saveBtn').style.display = 'inline-flex';
       document.getElementById('scrollTopBtn').style.display = 'inline-flex';
+      var resetBtn = document.getElementById('resetBtn');
+      resetBtn.style.display = defaultData[page] ? 'inline-flex' : 'none';
     }).catch(function(err) {
       editor.innerHTML = '<p style="color:#e74c3c;font-size:13px">Firestoreに接続できません。インターネット接続を確認してください。<br>' + (err && err.message ? err.message : '') + '</p>';
     });
   }
+
+  // ====== デフォルトに戻す ======
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    if (!defaultData[currentPage]) return;
+    if (!confirm('このページのデータをデフォルトに戻しますか？\n（Firestoreの既存データは保存ボタンを押すまで上書きされません）')) return;
+    pageData = JSON.parse(JSON.stringify(defaultData[currentPage]));
+    if (currentPage === 'index') renderIndexEditor(pageData);
+    else if (currentPage === 'footer') renderFooterEditor(pageData);
+    else renderEditor(currentPage, pageData);
+    showStatus('デフォルトデータに戻しました。保存ボタンを押すとFirestoreに反映されます', 'success');
+  });
 
   // ====== INDEX エディタ ======
   function renderIndexEditor(data) {
