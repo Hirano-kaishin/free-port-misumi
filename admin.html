@@ -832,7 +832,13 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   };
   window.addImage = function() {
     if (!pageData.images) pageData.images = [];
-    pageData.images.push({ section_key: 'new_image', image_url: '', alt: '', position: 'center', order: pageData.images.length });
+    // 最後の画像の section_key を引き継ぐ（ギャラリー追加時に自動で同じキーになる）
+    var lastKey = 'new_image';
+    if (pageData.images.length > 0) {
+      var last = pageData.images[pageData.images.length - 1];
+      if (last && last.section_key) lastKey = last.section_key;
+    }
+    pageData.images.push({ section_key: lastKey, image_url: '', alt: '', position: 'center', order: pageData.images.length + 1 });
     renderEditor(currentPage, pageData);
   };
   window.removeItem = function(type, index) {
