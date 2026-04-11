@@ -68,11 +68,24 @@ export async function loadImageData(pageName) {
   }
 }
 
+// ====== 画像Blob保存（大きな画像用・別ドキュメント化） ======
+// siteImages コレクションに key 毎に1ドキュメント（最大1MB/画像）
+export async function saveImageBlob(key, base64) {
+  await setDoc(doc(db, "siteImages", key), { data: base64 });
+  return true;
+}
+
+export async function loadImageBlob(key) {
+  const snap = await getDoc(doc(db, "siteImages", key));
+  if (snap.exists()) return snap.data().data || null;
+  return null;
+}
+
 // ====== 画像リサイズ（base64保存前に圧縮） ======
-// Firestore ドキュメント上限 1MB に収まるよう 1200x900 以下、JPEG 0.8 品質
+// Firestore ドキュメント上限 1MB に収まるよう 800x600 以下、JPEG 0.72 品質
 export function resizeImage(file, maxWidth, maxHeight) {
-  maxWidth = maxWidth || 1200;
-  maxHeight = maxHeight || 900;
+  maxWidth = maxWidth || 800;
+  maxHeight = maxHeight || 600;
   return new Promise(function(resolve) {
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -90,7 +103,7 @@ export function resizeImage(file, maxWidth, maxHeight) {
         canvas.height = h;
         var ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, w, h);
-        var dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        var dataUrl = canvas.toDataURL("image/jpeg", 0.72);
         resolve(dataUrl);
       };
       img.src = e.target.result;

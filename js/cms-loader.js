@@ -3,7 +3,7 @@
 // 各ページで読み込み、Firestore からデータを取得してページに反映
 // ====================================================
 
-import { loadPageData as firestoreLoad } from './firebase.js';
+import { loadPageData as firestoreLoad, loadImageBlob } from './firebase.js';
 
 (function() {
   // ページ名を自動判定
@@ -145,6 +145,20 @@ import { loadPageData as firestoreLoad } from './firebase.js';
 
   // ====== 画像適用 ======
   function applyImages(images) {
+    // fsimg: 参照の base64 実データを先に解決
+    var pending = [];
+    images.forEach(function(img) {
+      if (img && typeof img.image_url === 'string' && img.image_url.indexOf('fsimg:') === 0) {
+        var key = img.image_url.substring(6);
+        pending.push(loadImageBlob(key).then(function(data) {
+          img.image_url = data || '';
+        }).catch(function() { img.image_url = ''; }));
+      }
+    });
+    Promise.all(pending).then(function() { renderImages(images); });
+  }
+
+  function renderImages(images) {
     images.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
     images.forEach(function(img) {
       // idで検索

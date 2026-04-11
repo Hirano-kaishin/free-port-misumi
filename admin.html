@@ -126,7 +126,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
 <div class="status-msg" id="statusMsg"></div>
 
 <script type="module">
-import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeImage } from './js/firebase.js';
+import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeImage, saveImageBlob } from './js/firebase.js';
 (function(){
   // ====== 設定 ======
   var password = '';
@@ -873,12 +873,30 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
   };
 
   // ====== 保存 ======
+  // base64データURLが含まれる画像は別ドキュメントに分離して保存
+  // （Firestore 1ドキュメント1MB上限を回避）
+  function offloadBase64Images(imagesArr) {
+    if (!Array.isArray(imagesArr)) return Promise.resolve();
+    var jobs = [];
+    imagesArr.forEach(function(img) {
+      if (!img || !img.image_url) return;
+      if (img.image_url.indexOf('data:') !== 0) return;
+      var key = currentPage + '_' + (img.id || (img.section_key + '_' + (img.order || 0)));
+      var data = img.image_url;
+      jobs.push(saveImageBlob(key, data).then(function() {
+        img.image_url = 'fsimg:' + key;
+      }));
+    });
+    return Promise.all(jobs);
+  }
+
   document.getElementById('saveBtn').addEventListener('click', function() {
     var btn = document.getElementById('saveBtn');
     btn.disabled = true;
     btn.textContent = '保存中...';
 
     var saveData;
+    var imagesToOffload = [];
     if (currentPage === 'index') {
       collectIndexData();
       saveData = pageData;
@@ -893,10 +911,12 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
         options: pageData.options,
         images: pageData.images
       };
+      imagesToOffload = pageData.images;
     }
 
-    // Firestoreに保存
-    firestoreSave(currentPage, saveData).then(function() {
+    offloadBase64Images(imagesToOffload).then(function() {
+      return firestoreSave(currentPage, saveData);
+    }).then(function() {
       btn.disabled = false;
       btn.textContent = '保存する';
       showStatus('保存しました（全端末で反映）', 'success');
