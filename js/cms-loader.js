@@ -3,7 +3,7 @@
 // 各ページで読み込み、Firestore からデータを取得してページに反映
 // ====================================================
 
-import { loadPageData as firestoreLoad, loadImageBlob } from './firebase.js';
+import { loadPageData as firestoreLoad, loadImageBlob } from './firebase.js?v=20260411f';
 
 (function() {
   // ページ名を自動判定
