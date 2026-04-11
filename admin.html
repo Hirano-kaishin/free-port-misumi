@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>管理画面 v20260411e - FREE PORT</title>
+<title>管理画面 v20260411g - FREE PORT</title>
 <link rel="stylesheet" href="css/shared.css">
 <style>
 body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
@@ -94,7 +94,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
 <!-- 管理画面本体 -->
 <div class="admin-wrap" id="adminArea" style="display:none">
   <div class="admin-header">
-    <h1>FREE PORT 管理画面 <span style="font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.1em">v20260411e</span></h1>
+    <h1>FREE PORT 管理画面 <span style="font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.1em">v20260411g</span></h1>
     <a href="index.html">サイトに戻る</a>
   </div>
 
@@ -868,11 +868,26 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
     renderEditor(currentPage, pageData);
   };
   window.removeItem = function(type, index) {
-    if (!confirm('削除しますか？')) return;
+    if (!confirm('削除しますか？この操作は即座にFirestoreに反映されます')) return;
     collectFormData();
     var map = { section: 'sections', plan: 'plans', option: 'options', image: 'images' };
     pageData[map[type]].splice(index, 1);
     renderEditor(currentPage, pageData);
+    // 即座にFirestoreに保存して確実に反映
+    var saveData = {
+      sections: pageData.sections,
+      plans: pageData.plans,
+      options: pageData.options,
+      images: pageData.images
+    };
+    offloadBase64Images(pageData.images).then(function() {
+      return firestoreSave(currentPage, saveData);
+    }).then(function() {
+      showStatus('削除して保存しました', 'success');
+    }).catch(function(err) {
+      showStatus('削除の保存失敗: ' + (err && err.message ? err.message : err), 'error');
+      console.error('Firestore removeItem save error:', err);
+    });
   };
 
   // ====== 保存 ======
