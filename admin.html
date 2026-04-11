@@ -103,6 +103,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
     <button class="page-tab" data-page="gear">GEAR</button>
     <button class="page-tab" data-page="goods">GOODS</button>
     <button class="page-tab" data-page="furniture">FURNITURE</button>
+    <button class="page-tab" data-page="works">WORKS</button>
     <button class="page-tab" data-page="about">ABOUT</button>
     <button class="page-tab" data-page="access">ACCESS</button>
     <button class="page-tab" data-page="footer">FOOTER</button>
@@ -292,6 +293,35 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
         { id:'furniture_1', section_key:'furniture_gallery', image_url:'images/furniture-sofa.jpg', alt:'ソファ', position:'center', order:1 },
         { id:'furniture_2', section_key:'furniture_gallery', image_url:'images/furniture-rug.jpg', alt:'ラグ', position:'center', order:2 },
         { id:'furniture_3', section_key:'furniture_gallery', image_url:'images/furniture-cushion.jpg', alt:'クッション', position:'center', order:3 }
+      ]
+    },
+    works: {
+      sections: [
+        { id:'works_hero', section_key:'works_hero', label_ja:'オーダーメイド制作実績', label_en:'Custom Works', title:'CUSTOM WORKS', body:'愛犬や愛猫の写真から、クッション・マグカップ・キーホルダーなど世界にひとつだけのオーダーメイドグッズを制作。お気に入りの一枚が、毎日そばに置けるアイテムに生まれ変わります。', body2:'大切な人へのプレゼントや企業ノベルティ、ネットショップの商品展開、店舗のオーダーメイドグッズなど、さまざまなシーンに合わせたオーダーメイド制作が可能です。', order:1 },
+        { id:'works_case_1', section_key:'works_case_1', label_ja:'', label_en:'', title:'お客様のお写真', body:'ハート型クッション', body2:'', order:2 },
+        { id:'works_case_2', section_key:'works_case_2', label_ja:'', label_en:'', title:'お客様のお写真', body:'ダイカットクッション', body2:'', order:3 },
+        { id:'works_gallery', section_key:'works_gallery', label_ja:'', label_en:'', title:'GALLERY', body:'これまでの制作実績をご紹介します。', body2:'', order:4 },
+        { id:'works_cta', section_key:'works_cta', label_ja:'', label_en:'', title:'', body:'写真1枚からオーダー可能です。お気軽にご相談ください。', body2:'', order:5 }
+      ],
+      plans: [], options: [],
+      images: [
+        { id:'works_case_1_1', section_key:'works_case_1', image_url:'images/works-dog.jpg', alt:'チワワの写真', position:'center', order:1 },
+        { id:'works_case_1_2', section_key:'works_case_1', image_url:'images/works-dog-cushion.jpg', alt:'チワワのオリジナルクッション', position:'center', order:2 },
+        { id:'works_case_2_1', section_key:'works_case_2', image_url:'images/works-cat.jpg', alt:'猫の写真', position:'center', order:1 },
+        { id:'works_case_2_2', section_key:'works_case_2', image_url:'images/works-cat-cushion.jpg', alt:'猫のオリジナルクッション', position:'center', order:2 },
+        { id:'works_gallery_1', section_key:'works_gallery', image_url:'images/works-blanket.jpg', alt:'オリジナルブランケット', position:'center', order:1 },
+        { id:'works_gallery_2', section_key:'works_gallery', image_url:'images/works-cushion-suzu.jpg', alt:'ダイカットクッション', position:'center', order:2 },
+        { id:'works_gallery_3', section_key:'works_gallery', image_url:'images/works-mug.jpg', alt:'オリジナルマグカップ', position:'center', order:3 },
+        { id:'works_gallery_4', section_key:'works_gallery', image_url:'images/works-ashtray.jpg', alt:'オリジナル灰皿', position:'center', order:4 },
+        { id:'works_gallery_5', section_key:'works_gallery', image_url:'images/works-cushion-poodle.jpg', alt:'ハート型クッション', position:'center', order:5 },
+        { id:'works_gallery_6', section_key:'works_gallery', image_url:'images/works-cushion-suzu-heart.jpg', alt:'ハート型クッション', position:'center', order:6 },
+        { id:'works_gallery_7', section_key:'works_gallery', image_url:'images/works-cushion-poodle-green.jpg', alt:'ハート型クッション', position:'center', order:7 },
+        { id:'works_gallery_8', section_key:'works_gallery', image_url:'images/works-keychain.jpg', alt:'オリジナルキーホルダー', position:'center', order:8 },
+        { id:'works_gallery_9', section_key:'works_gallery', image_url:'images/works-mat.jpg', alt:'オリジナルマット', position:'center', order:9 },
+        { id:'works_gallery_10', section_key:'works_gallery', image_url:'images/IMG_6306.JPG', alt:'オリジナルアートパネル', position:'center', order:10 },
+        { id:'works_gallery_11', section_key:'works_gallery', image_url:'images/IMG_6304.JPG', alt:'オリジナルサインプレート', position:'center', order:11 },
+        { id:'works_gallery_12', section_key:'works_gallery', image_url:'images/IMG_6305.JPG', alt:'オリジナル灰皿（星月夜風）', position:'center', order:12 },
+        { id:'works_gallery_13', section_key:'works_gallery', image_url:'images/IMG_6307.JPG', alt:'オリジナル灰皿（ピンク）', position:'center', order:13 }
       ]
     },
     about: {

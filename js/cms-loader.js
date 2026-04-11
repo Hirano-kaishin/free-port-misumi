@@ -16,6 +16,7 @@ import { loadPageData as firestoreLoad } from './firebase.js';
     'gear': 'gear',
     'goods': 'goods',
     'furniture': 'furniture',
+    'works': 'works',
     'about': 'about',
     'access': 'access'
   };
@@ -155,6 +156,10 @@ import { loadPageData as firestoreLoad } from './firebase.js';
           var innerImg = el.querySelector('img');
           if (innerImg) {
             innerImg.src = img.image_url;
+            if (img.alt) innerImg.alt = img.alt;
+          } else if (el.tagName === 'IMG') {
+            el.src = img.image_url;
+            if (img.alt) el.alt = img.alt;
           } else {
             el.style.backgroundImage = 'url("' + img.image_url + '")';
           }
@@ -162,6 +167,24 @@ import { loadPageData as firestoreLoad } from './firebase.js';
         if (img.position) {
           el.style.backgroundPosition = img.position;
         }
+      });
+    });
+
+    // 動的ギャラリー: data-cms-gallery="section_key" を持つコンテナに
+    // section_key が一致する画像をすべて img タグとして並べる
+    var galleries = document.querySelectorAll('[data-cms-gallery]');
+    galleries.forEach(function(container) {
+      var key = container.getAttribute('data-cms-gallery');
+      var matched = images
+        .filter(function(img) { return img.section_key === key && img.image_url; })
+        .sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+      if (matched.length === 0) return;
+      container.innerHTML = '';
+      matched.forEach(function(img) {
+        var el = document.createElement('img');
+        el.src = img.image_url;
+        el.alt = img.alt || '';
+        container.appendChild(el);
       });
     });
   }
