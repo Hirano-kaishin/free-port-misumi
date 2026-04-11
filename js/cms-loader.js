@@ -171,22 +171,49 @@ import { loadPageData as firestoreLoad } from './firebase.js';
     });
 
     // 動的ギャラリー: data-cms-gallery="section_key" を持つコンテナに
-    // section_key が一致する画像をすべて img タグとして並べる
+    // section_key が一致する画像を並べる。さらに、どの data-cms-image にも
+    // section_key が一致するギャラリーにも属さない「孤児」画像は、
+    // 最初のギャラリーコンテナに自動で追加される（section_key を気にせず追加可能）
     var galleries = document.querySelectorAll('[data-cms-gallery]');
-    galleries.forEach(function(container) {
-      var key = container.getAttribute('data-cms-gallery');
-      var matched = images
-        .filter(function(img) { return img.section_key === key && img.image_url; })
-        .sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
-      if (matched.length === 0) return;
-      container.innerHTML = '';
-      matched.forEach(function(img) {
-        var el = document.createElement('img');
-        el.src = img.image_url;
-        el.alt = img.alt || '';
-        container.appendChild(el);
+    if (galleries.length > 0) {
+      var matchedImageIds = {};
+      document.querySelectorAll('[data-cms-image]').forEach(function(el) {
+        matchedImageIds[el.getAttribute('data-cms-image')] = true;
       });
-    });
+      var galleryKeys = {};
+      var defaultGalleryKey = null;
+      galleries.forEach(function(c) {
+        var k = c.getAttribute('data-cms-gallery');
+        galleryKeys[k] = c;
+        if (!defaultGalleryKey) defaultGalleryKey = k;
+      });
+
+      var buckets = {};
+      Object.keys(galleryKeys).forEach(function(k) { buckets[k] = []; });
+
+      images.forEach(function(img) {
+        if (!img.image_url) return;
+        if (galleryKeys[img.section_key]) {
+          buckets[img.section_key].push(img);
+        } else if (!matchedImageIds[img.id]) {
+          // どこにも属さない画像はデフォルトギャラリーに追加
+          buckets[defaultGalleryKey].push(img);
+        }
+      });
+
+      Object.keys(buckets).forEach(function(k) {
+        var matched = buckets[k].sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+        if (matched.length === 0) return;
+        var container = galleryKeys[k];
+        container.innerHTML = '';
+        matched.forEach(function(img) {
+          var el = document.createElement('img');
+          el.src = img.image_url;
+          el.alt = img.alt || '';
+          container.appendChild(el);
+        });
+      });
+    }
   }
 
   function escHtml(str) {
