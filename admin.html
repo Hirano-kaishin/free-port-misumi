@@ -53,10 +53,13 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
 .tag-chip .remove:hover{color:#e74c3c}
 
 /* ステータス */
-.status-msg{position:fixed;bottom:20px;right:20px;padding:12px 24px;font-size:13px;z-index:100;transition:all 0.3s;transform:translateY(100px);opacity:0}
+.status-msg{position:fixed;bottom:20px;right:20px;padding:12px 24px;font-size:13px;z-index:9999;transition:all 0.3s;transform:translateY(100px);opacity:0;box-shadow:0 4px 16px rgba(0,0,0,0.4);border-radius:4px;font-weight:500}
 .status-msg.show{transform:translateY(0);opacity:1}
 .status-msg.success{background:#27ae60;color:#fff}
 .status-msg.error{background:#e74c3c;color:#fff}
+@media(max-width:768px){
+  .status-msg{left:16px;right:16px;bottom:16px;text-align:center;font-size:14px;padding:14px 20px}
+}
 
 /* ヘッダー */
 .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -580,9 +583,14 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
           document.getElementById('pw_current').value = '';
           document.getElementById('pw_new').value = '';
           document.getElementById('pw_confirm').value = '';
+          // スマホでも視認できるよう画面下部にトースト通知も表示
+          showStatus('パスワードを変更しました（全端末で有効）', 'success');
+          // メッセージを画面内にスクロール
+          msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }).catch(function(err) {
           msg.style.display = 'block'; msg.style.color = '#e74c3c';
           msg.textContent = '保存失敗: ' + (err && err.message ? err.message : err) + ' (code: ' + (err && err.code ? err.code : 'unknown') + ')';
+          showStatus('保存失敗: ' + (err && err.message ? err.message : err), 'error');
           console.error('Firestore savePageData(password) error:', err);
         });
       }).catch(function(err) {
@@ -919,7 +927,7 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
     var el = document.getElementById('statusMsg');
     el.textContent = msg;
     el.className = 'status-msg show ' + type;
-    setTimeout(function() { el.className = 'status-msg'; }, 3000);
+    setTimeout(function() { el.className = 'status-msg'; }, 4000);
   }
 })();
 </script>
