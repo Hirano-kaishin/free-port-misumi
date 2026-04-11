@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>管理画面 v20260411g - FREE PORT</title>
+<title>管理画面 v20260411h - FREE PORT</title>
 <link rel="stylesheet" href="css/shared.css">
 <style>
 body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
@@ -94,7 +94,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
 <!-- 管理画面本体 -->
 <div class="admin-wrap" id="adminArea" style="display:none">
   <div class="admin-header">
-    <h1>FREE PORT 管理画面 <span style="font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.1em">v20260411g</span></h1>
+    <h1>FREE PORT 管理画面 <span style="font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.1em">v20260411h</span></h1>
     <a href="index.html">サイトに戻る</a>
   </div>
 
@@ -129,7 +129,7 @@ body{background:#0e0e0e;color:#faf9f6;font-family:'Noto Sans JP',sans-serif}
 <div class="status-msg" id="statusMsg"></div>
 
 <script type="module">
-import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeImage, saveImageBlob } from './js/firebase.js?v=20260411f';
+import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeImage, saveImageBlob, loadImageBlob } from './js/firebase.js?v=20260411h';
 (function(){
   // ====== 設定 ======
   var password = '';
@@ -729,6 +729,25 @@ import { savePageData as firestoreSave, loadPageData as firestoreLoad, resizeIma
     // ファイル選択のイベントを設定
     document.querySelectorAll('.img-file-input').forEach(function(input) {
       input.addEventListener('change', handleImageSelect);
+    });
+
+    // fsimg: 参照のプレビューを非同期解決（別ドキュメントから base64 を取得）
+    document.querySelectorAll('[data-type="image"]').forEach(function(section) {
+      var urlInput = section.querySelector('.img-url-input');
+      if (!urlInput || urlInput.value.indexOf('fsimg:') !== 0) return;
+      var key = urlInput.value.substring(6);
+      loadImageBlob(key).then(function(data) {
+        if (!data) return;
+        var preview = section.querySelector('div[style*="background-image"]');
+        if (preview) {
+          preview.style.backgroundImage = 'url(' + data + ')';
+        } else {
+          var p = document.createElement('div');
+          p.style.cssText = 'margin-bottom:12px;width:200px;height:130px;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.1)';
+          p.style.backgroundImage = 'url(' + data + ')';
+          section.querySelector('h3').after(p);
+        }
+      }).catch(function(err) { console.warn('fsimg preview load failed:', key, err); });
     });
   }
 
