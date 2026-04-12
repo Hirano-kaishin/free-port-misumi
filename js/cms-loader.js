@@ -23,13 +23,37 @@ import { loadPageData as firestoreLoad, loadImageBlob } from './firebase.js?v=20
 
   if (!pageMap[pageName]) return;
 
+  // デバッグパネル（?debug 付きで表示）
+  var debugEnabled = location.search.indexOf('debug') !== -1;
+  var debugPanel = null;
+  function dbg(msg) {
+    if (!debugEnabled) return;
+    if (!debugPanel) {
+      debugPanel = document.createElement('div');
+      debugPanel.style.cssText = 'position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,0.92);color:#0f0;font-family:monospace;font-size:11px;padding:8px;z-index:99999;max-height:50vh;overflow:auto;white-space:pre-wrap;word-break:break-all;border-bottom:2px solid #0f0';
+      if (document.body) document.body.appendChild(debugPanel);
+      else document.addEventListener('DOMContentLoaded', function(){ document.body.appendChild(debugPanel); });
+    }
+    var line = document.createElement('div');
+    line.textContent = '[' + new Date().toISOString().substring(11,19) + '] ' + msg;
+    debugPanel.appendChild(line);
+  }
+  window.addEventListener('error', function(e){ dbg('JS ERROR: ' + (e.message || e) + ' @ ' + (e.filename||'') + ':' + (e.lineno||'')); });
+  window.addEventListener('unhandledrejection', function(e){ dbg('PROMISE REJECT: ' + (e.reason && e.reason.message ? e.reason.message : e.reason)); });
+
   function loadData() {
+    dbg('loadData start, page=' + pageName);
     // Firestoreから読み込み（唯一のデータソース）
     firestoreLoad(pageName).then(function(fsData) {
       if (fsData) {
+        dbg('Firestore OK: sections=' + (fsData.sections?fsData.sections.length:0) + ' images=' + (fsData.images?fsData.images.length:0));
         applyData(fsData);
+        dbg('applyData done');
+      } else {
+        dbg('Firestore returned null');
       }
     }).catch(function(err) {
+      dbg('Firestore ERROR: ' + (err && err.message ? err.message : err));
       console.error('Firestore接続エラー:', err);
     });
   }
@@ -147,15 +171,27 @@ import { loadPageData as firestoreLoad, loadImageBlob } from './firebase.js?v=20
   function applyImages(images) {
     // fsimg: 参照の base64 実データを先に解決
     var pending = [];
+    var fsimgCount = 0, failCount = 0;
     images.forEach(function(img) {
       if (img && typeof img.image_url === 'string' && img.image_url.indexOf('fsimg:') === 0) {
+        fsimgCount++;
         var key = img.image_url.substring(6);
         pending.push(loadImageBlob(key).then(function(data) {
+          if (!data) { failCount++; dbg('fsimg empty: ' + key); }
           img.image_url = data || '';
-        }).catch(function() { img.image_url = ''; }));
+        }).catch(function(e) {
+          failCount++;
+          dbg('fsimg FAIL: ' + key + ' — ' + (e && e.message ? e.message : e));
+          img.image_url = '';
+        }));
       }
     });
-    Promise.all(pending).then(function() { renderImages(images); });
+    dbg('applyImages: total=' + images.length + ' fsimg=' + fsimgCount);
+    Promise.all(pending).then(function() {
+      dbg('fsimg resolved, fails=' + failCount);
+      renderImages(images);
+      dbg('renderImages done');
+    });
   }
 
   function renderImages(images) {
