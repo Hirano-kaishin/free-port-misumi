@@ -5,7 +5,7 @@
 
 // 設定
 var ADMIN_PASSWORD = '0000'; // 管理画面のパスワード（変更してください）
-var SPREADSHEET_ID = ''; // ← スプレッドシートのIDを入力
+var SPREADSHEET_ID = '183fNtEqTYHBJSskXH7PBKG_vPu7FKqErRGN7L0o6giQ';
 
 function getSpreadsheet() {
   if (SPREADSHEET_ID) {
@@ -261,7 +261,17 @@ function handleReservation(payload) {
     payload.notes
   ]);
 
-  // 自動返信メール
+  // 予約内容テンプレート
+  var reservationDetail =
+    '■ ご利用日: ' + payload.date + '\n' +
+    '■ 人数: ' + payload.guests + '名\n' +
+    '■ プラン: ' + payload.plan + '\n' +
+    (payload.options ? '■ オプション: ' + payload.options + '\n' : '') +
+    '■ 合計: ' + payload.total + '\n' +
+    (payload.phone ? '■ 電話: ' + payload.phone + '\n' : '') +
+    (payload.notes ? '■ 備考: ' + payload.notes + '\n' : '');
+
+  // お客様への自動返信メール
   if (payload.email) {
     try {
       MailApp.sendEmail({
@@ -269,17 +279,30 @@ function handleReservation(payload) {
         subject: '【FREE PORT】ご予約ありがとうございます',
         body: payload.name + ' 様\n\n' +
           'ご予約を承りました。\n\n' +
-          '■ ご利用日: ' + payload.date + '\n' +
-          '■ 人数: ' + payload.guests + '名\n' +
-          '■ プラン: ' + payload.plan + '\n' +
-          (payload.options ? '■ オプション: ' + payload.options + '\n' : '') +
-          '■ 合計: ' + payload.total + '\n\n' +
+          reservationDetail + '\n' +
           'ご不明な点がございましたら、お気軽にご連絡ください。\n\n' +
           'FREE PORT\n' +
           '〒869-3207 熊本県宇城市三角町三角浦1337-11\n' +
           'milspec.cps@gmail.com'
       });
-    } catch(e) {}
+    } catch(e) {
+      Logger.log('お客様メール送信エラー: ' + e.toString());
+    }
+  }
+
+  // オーナーへの通知メール
+  try {
+    MailApp.sendEmail({
+      to: 'milspec.cps@gmail.com',
+      subject: '【FREE PORT】新規予約: ' + (payload.name || '名前なし') + ' 様',
+      body: '新しい予約が入りました。\n\n' +
+        '■ 名前: ' + (payload.name || '未入力') + '\n' +
+        '■ メール: ' + (payload.email || '未入力') + '\n' +
+        reservationDetail + '\n' +
+        'スプレッドシートで確認:\nhttps://docs.google.com/spreadsheets/d/183fNtEqTYHBJSskXH7PBKG_vPu7FKqErRGN7L0o6giQ/edit'
+    });
+  } catch(e) {
+    Logger.log('オーナー通知メール送信エラー: ' + e.toString());
   }
 
   return ContentService.createTextOutput(JSON.stringify({ success: true }))
