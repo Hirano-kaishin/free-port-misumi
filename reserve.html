@@ -420,7 +420,7 @@
                         class="plan-grid-wrap"
                         style="
                             display: grid;
-                            grid-template-columns: 1fr 1fr 1fr;
+                            grid-template-columns: 1fr 1fr;
                             gap: 16px;
                         "
                     >
@@ -453,6 +453,26 @@
                             </div>
                             <div class="plan-price">1人あたり10,000円</div>
                         </label>
+                        <label class="plan-card" id="planSauna">
+                            <input type="radio" name="plan" value="saunaonly" />
+                            <div class="plan-name">SAUNA ONLY</div>
+                            <div class="plan-desc">
+                                サウナのみ利用（3時間）<br />2名から受付可能
+                            </div>
+                            <div class="plan-price">1人あたり3,000円</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- TIME SLOT (for SAUNA ONLY) -->
+                <div class="rsv-group" id="timeSlotSection" style="display:none">
+                    <label class="rsv-label"
+                        ><span class="ja">利用時間帯</span>Time Slot</label
+                    >
+                    <div style="display:flex;gap:12px;flex-wrap:wrap">
+                        <label class="slot-opt" style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border:1px solid rgba(255,255,255,0.2);cursor:pointer"><input type="radio" name="timeSlot" value="12:00-15:00" checked /> 12:00〜15:00</label>
+                        <label class="slot-opt" style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border:1px solid rgba(255,255,255,0.2);cursor:pointer"><input type="radio" name="timeSlot" value="15:00-18:00" /> 15:00〜18:00</label>
+                        <label class="slot-opt" style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border:1px solid rgba(255,255,255,0.2);cursor:pointer"><input type="radio" name="timeSlot" value="18:00-21:00" /> 18:00〜21:00</label>
                     </div>
                 </div>
 
@@ -793,12 +813,13 @@
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 dateInput.min = tomorrow.toISOString().split("T")[0];
 
-                // 予約済み日付を取得して警告表示
+                // 予約済み情報を取得して警告表示
                 var GAS_URL_BASE =
                     "https://script.google.com/macros/s/AKfycbxqHAS9ZKqrpGTBQ8rJVaCZbDNlGfqCf1jhzXpCtyPeU_beYTpc62GhJhkhV4zVEpn1/exec";
-                var reservedDates = [];
+                var reservations = []; // [{date, plan, timeSlot}]
                 var dateWarning = document.getElementById("dateWarning");
                 var reservedList = document.getElementById("reservedList");
+                var timeSlotSection = document.getElementById("timeSlotSection");
 
                 function formatJpDate(ymd) {
                     var parts = ymd.split("-");
@@ -806,39 +827,74 @@
                     return parts[0] + "年" + parseInt(parts[1]) + "月" + parseInt(parts[2]) + "日";
                 }
 
-                fetch(GAS_URL_BASE + "?action=getReservedDates")
+                function getSelectedTimeSlot() {
+                    var checked = document.querySelector('input[name="timeSlot"]:checked');
+                    return checked ? checked.value : "";
+                }
+
+                function renderReservedList() {
+                    var byDate = {};
+                    reservations.forEach(function (r) {
+                        if (r.date < dateInput.min) return;
+                        if (!byDate[r.date]) byDate[r.date] = [];
+                        byDate[r.date].push(r);
+                    });
+                    var dates = Object.keys(byDate).sort();
+                    if (dates.length === 0) { reservedList.innerHTML = ""; return; }
+                    var lines = dates.map(function (date) {
+                        var rs = byDate[date];
+                        var fullDay = rs.filter(function (r) { return r.plan !== "サウナのみ"; });
+                        if (fullDay.length > 0) {
+                            return formatJpDate(date) + "（終日予約済み）";
+                        }
+                        var slots = rs.map(function (r) { return r.timeSlot; }).filter(Boolean).sort();
+                        return formatJpDate(date) + " サウナのみ予約済み: " + slots.join(" / ");
+                    });
+                    reservedList.innerHTML = "予約済み:<br>" + lines.join("<br>");
+                }
+
+                fetch(GAS_URL_BASE + "?action=getReservations")
                     .then(function (r) { return r.json(); })
                     .then(function (data) {
-                        if (!data || !data.dates) return;
-                        reservedDates = data.dates;
-                        if (reservedDates.length > 0) {
-                            var labels = reservedDates
-                                .filter(function (d) { return d >= dateInput.min; })
-                                .sort()
-                                .map(formatJpDate);
-                            if (labels.length > 0) {
-                                reservedList.innerHTML =
-                                    "予約済み: " + labels.join(" / ");
-                            }
-                        }
+                        if (!data || !data.reservations) return;
+                        reservations = data.reservations;
+                        renderReservedList();
                         checkDateAvailability();
                     })
                     .catch(function () { /* 取得失敗時は無視、送信時にサーバーで再チェック */ });
 
                 function checkDateAvailability() {
-                    var v = dateInput.value;
-                    var isReserved = v && reservedDates.indexOf(v) !== -1;
-                    dateWarning.style.display = isReserved ? "block" : "none";
+                    var date = dateInput.value;
+                    var plan = getSelectedPlan();
+                    var slot = getSelectedTimeSlot();
+                    var conflict = false;
+                    if (date) {
+                        var onDate = reservations.filter(function (r) { return r.date === date; });
+                        if (plan === "saunaonly") {
+                            var hasFullDay = onDate.some(function (r) { return r.plan !== "サウナのみ"; });
+                            if (hasFullDay) conflict = true;
+                            else if (slot && onDate.some(function (r) { return r.timeSlot === slot; })) conflict = true;
+                        } else {
+                            if (onDate.length > 0) conflict = true;
+                        }
+                    }
+                    dateWarning.style.display = conflict ? "block" : "none";
+                    dateWarning.textContent = plan === "saunaonly"
+                        ? "⚠ この日付・時間帯はすでに予約されています。別の日付または時間帯をお選びください。"
+                        : "⚠ この日付はすでに予約されています。別の日付をお選びください。";
                     var btn = document.getElementById("submitBtn");
                     if (btn) {
-                        btn.disabled = isReserved;
-                        btn.style.opacity = isReserved ? "0.4" : "";
-                        btn.style.cursor = isReserved ? "not-allowed" : "";
+                        btn.disabled = conflict;
+                        btn.style.opacity = conflict ? "0.4" : "";
+                        btn.style.cursor = conflict ? "not-allowed" : "";
                     }
                 }
 
                 dateInput.addEventListener("change", checkDateAvailability);
                 dateInput.addEventListener("input", checkDateAvailability);
+                document.querySelectorAll('input[name="timeSlot"]').forEach(function (el) {
+                    el.addEventListener("change", checkDateAvailability);
+                });
 
                 function getSelectedPlan() {
                     var checked = document.querySelector(
@@ -857,6 +913,9 @@
                     } else if (plan === "daycamp") {
                         base = 2000;
                         planLabel = "DAY CAMP";
+                    } else if (plan === "saunaonly") {
+                        base = n >= 4 ? 2500 : 3000;
+                        planLabel = "SAUNA ONLY";
                     } else {
                         base = 5000;
                         planLabel = "CAMP STAY";
@@ -865,8 +924,8 @@
                     var subtotal = base * n;
                     var optLines = [];
 
-                    // Sauna calculation (not for omakase)
-                    if (plan !== "omakase") {
+                    // Sauna calculation (not for omakase / saunaonly)
+                    if (plan !== "omakase" && plan !== "saunaonly") {
                         var saunaCheck = document.getElementById("saunaCheck");
                         if (saunaCheck && saunaCheck.checked) {
                             var saunaPrice = n >= 4 ? 2500 : 3000;
@@ -922,9 +981,13 @@
                         card.querySelector("input").checked = true;
 
                         var selectedPlan = getSelectedPlan();
-                        // Omakase: disable both sauna and rental
+                        // Show/hide time slot selector for saunaonly
+                        if (timeSlotSection) {
+                            timeSlotSection.style.display = selectedPlan === "saunaonly" ? "" : "none";
+                        }
+                        // Omakase / SaunaOnly: disable both sauna and rental
                         // Camp Stay: sauna included, disable sauna option
-                        if (selectedPlan === "omakase") {
+                        if (selectedPlan === "omakase" || selectedPlan === "saunaonly") {
                             rentalSection.style.opacity = "0.3";
                             rentalSection.style.pointerEvents = "none";
                             saunaSection.style.opacity = "0.3";
@@ -953,6 +1016,7 @@
                             saunaSection.style.pointerEvents = "auto";
                         }
                         calcTotal();
+                        checkDateAvailability();
                     });
                 });
 
@@ -1006,8 +1070,21 @@
                             alert("ご利用日を選択してください");
                             return;
                         }
-                        if (reservedDates.indexOf(date) !== -1) {
-                            alert("この日付はすでに予約されています。別の日付をお選びください。");
+                        var timeSlot = plan === "saunaonly" ? getSelectedTimeSlot() : "";
+                        if (plan === "saunaonly" && parseInt(n) < 2) {
+                            alert("サウナのみプランは2名からご利用いただけます。");
+                            return;
+                        }
+                        var onDate = reservations.filter(function (r) { return r.date === date; });
+                        var dup = false;
+                        if (plan === "saunaonly") {
+                            if (onDate.some(function (r) { return r.plan !== "サウナのみ"; })) dup = true;
+                            else if (timeSlot && onDate.some(function (r) { return r.timeSlot === timeSlot; })) dup = true;
+                        } else {
+                            if (onDate.length > 0) dup = true;
+                        }
+                        if (dup) {
+                            alert("この日付・時間帯はすでに予約されています。別の日付または時間帯をお選びください。");
                             return;
                         }
                         if (!name) {
@@ -1025,10 +1102,11 @@
                             normal: "キャンプ宿泊",
                             daycamp: "デイキャンプ",
                             omakase: "おまかせプラン",
+                            saunaonly: "サウナのみ",
                         };
                         var planLabel = planLabels[plan] || "キャンプ宿泊";
                         var optList = [];
-                        if (plan !== "omakase") {
+                        if (plan !== "omakase" && plan !== "saunaonly") {
                             var saunaCheck =
                                 document.getElementById("saunaCheck");
                             if (saunaCheck && saunaCheck.checked)
@@ -1069,6 +1147,7 @@
                                 email: email,
                                 phone: phone,
                                 notes: notes,
+                                timeSlot: timeSlot,
                             }),
                         })
                             .then(function () {

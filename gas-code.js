@@ -142,24 +142,53 @@ function replacePageData(ss, sheetName, page, newRows) {
 }
 
 function getReservedDates() {
+  return getReservations().map(function(r) { return r.date; });
+}
+
+function getReservations() {
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName('reservations');
   if (!sheet || sheet.getLastRow() <= 1) return [];
   var data = sheet.getDataRange().getValues();
-  var dates = [];
+  var headers = data[0];
+  var dateIdx = 1;
+  var planIdx = headers.indexOf('プラン');
+  var slotIdx = headers.indexOf('時間枠');
+  var results = [];
   for (var i = 1; i < data.length; i++) {
-    var d = data[i][1];
+    var d = data[i][dateIdx];
     if (!d) continue;
+    var dateStr;
     if (d instanceof Date) {
       var y = d.getFullYear();
       var m = ('0' + (d.getMonth() + 1)).slice(-2);
       var day = ('0' + d.getDate()).slice(-2);
-      dates.push(y + '-' + m + '-' + day);
+      dateStr = y + '-' + m + '-' + day;
     } else {
-      dates.push(String(d));
+      dateStr = String(d);
     }
+    results.push({
+      date: dateStr,
+      plan: planIdx >= 0 ? String(data[i][planIdx] || '') : '',
+      timeSlot: slotIdx >= 0 ? String(data[i][slotIdx] || '') : ''
+    });
   }
-  return dates;
+  return results;
+}
+
+function ensureReservationsSheet() {
+  var ss = getSpreadsheet();
+  var sheet = ss.getSheetByName('reservations');
+  if (!sheet) {
+    sheet = ss.insertSheet('reservations');
+    sheet.appendRow(['日時', '宿泊日', '人数', 'プラン', 'オプション', '合計', '名前', 'メール', '電話', '備考', '時間枠']);
+    return sheet;
+  }
+  var headers = sheet.getRange(1, 1, 1, Math.max(1, sheet.getLastColumn())).getValues()[0];
+  if (headers.indexOf('時間枠') === -1) {
+    sheet.getRange(1, headers.length + 1).setValue('時間枠');
+  }
+  return sheet;
 }
 
 function doGet(e) {
@@ -175,6 +204,8 @@ function doGet(e) {
     result = { valid: e.parameter.pw === ADMIN_PASSWORD };
   } else if (action === 'getReservedDates') {
     result = { dates: getReservedDates() };
+  } else if (action === 'getReservations') {
+    result = { reservations: getReservations() };
   } else {
     result = { error: 'unknown action' };
   }
@@ -214,30 +245,34 @@ function doPost(e) {
 }
 
 function handleReservation(payload) {
-  var ss = getSpreadsheet();
-  var sheet = ss.getSheetByName('reservations');
-  if (!sheet) {
-    sheet = ss.insertSheet('reservations');
-    sheet.appendRow(['日時', '宿泊日', '人数', 'プラン', 'オプション', '合計', '名前', 'メール', '電話', '備考']);
-  }
+  var sheet = ensureReservationsSheet();
 
-  // 重複予約チェック（同日1組のみ）
-  var reserved = getReservedDates();
-  if (payload.date && reserved.indexOf(payload.date) !== -1) {
+  // 重複予約チェック
+  var isSaunaOnly = (payload.plan === 'サウナのみ');
+  var existing = getReservations().filter(function(r) { return r.date === payload.date; });
+  var conflict = false;
+  for (var i = 0; i < existing.length; i++) {
+    var ev = existing[i];
+    if (!isSaunaOnly) { conflict = true; break; }
+    if (ev.plan !== 'サウナのみ') { conflict = true; break; }
+    if (ev.timeSlot && ev.timeSlot === payload.timeSlot) { conflict = true; break; }
+  }
+  if (payload.date && conflict) {
     return ContentService.createTextOutput(JSON.stringify({
       error: 'duplicate',
-      message: 'この日付はすでに予約されています'
+      message: 'この日付・時間帯はすでに予約されています'
     })).setMimeType(ContentService.MimeType.JSON);
   }
 
   sheet.appendRow([
     new Date(), payload.date, payload.guests, payload.plan,
     payload.options, payload.total, payload.name, payload.email,
-    payload.phone, payload.notes
+    payload.phone, payload.notes, payload.timeSlot || ''
   ]);
 
   var reservationDetail =
     '■ ご利用日: ' + payload.date + '\n' +
+    (payload.timeSlot ? '■ 利用時間: ' + payload.timeSlot + '\n' : '') +
     '■ 人数: ' + payload.guests + '名\n' +
     '■ プラン: ' + payload.plan + '\n' +
     (payload.options ? '■ オプション: ' + payload.options + '\n' : '') +
