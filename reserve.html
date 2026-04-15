@@ -393,6 +393,8 @@
                             ><span class="ja">ご利用日</span>Date</label
                         >
                         <input type="date" class="rsv-input" id="rsvDate" />
+                        <div id="dateWarning" style="display:none;color:#e74c3c;font-size:13px;margin-top:8px;font-weight:500">⚠ この日付はすでに予約されています。別の日付をお選びください。</div>
+                        <div id="reservedList" style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px;line-height:1.6"></div>
                     </div>
                     <div class="rsv-group" style="margin-bottom: 0">
                         <label class="rsv-label"
@@ -791,6 +793,53 @@
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 dateInput.min = tomorrow.toISOString().split("T")[0];
 
+                // 予約済み日付を取得して警告表示
+                var GAS_URL_BASE =
+                    "https://script.google.com/macros/s/AKfycbxqHAS9ZKqrpGTBQ8rJVaCZbDNlGfqCf1jhzXpCtyPeU_beYTpc62GhJhkhV4zVEpn1/exec";
+                var reservedDates = [];
+                var dateWarning = document.getElementById("dateWarning");
+                var reservedList = document.getElementById("reservedList");
+
+                function formatJpDate(ymd) {
+                    var parts = ymd.split("-");
+                    if (parts.length !== 3) return ymd;
+                    return parts[0] + "年" + parseInt(parts[1]) + "月" + parseInt(parts[2]) + "日";
+                }
+
+                fetch(GAS_URL_BASE + "?action=getReservedDates")
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (!data || !data.dates) return;
+                        reservedDates = data.dates;
+                        if (reservedDates.length > 0) {
+                            var labels = reservedDates
+                                .filter(function (d) { return d >= dateInput.min; })
+                                .sort()
+                                .map(formatJpDate);
+                            if (labels.length > 0) {
+                                reservedList.innerHTML =
+                                    "予約済み: " + labels.join(" / ");
+                            }
+                        }
+                        checkDateAvailability();
+                    })
+                    .catch(function () { /* 取得失敗時は無視、送信時にサーバーで再チェック */ });
+
+                function checkDateAvailability() {
+                    var v = dateInput.value;
+                    var isReserved = v && reservedDates.indexOf(v) !== -1;
+                    dateWarning.style.display = isReserved ? "block" : "none";
+                    var btn = document.getElementById("submitBtn");
+                    if (btn) {
+                        btn.disabled = isReserved;
+                        btn.style.opacity = isReserved ? "0.4" : "";
+                        btn.style.cursor = isReserved ? "not-allowed" : "";
+                    }
+                }
+
+                dateInput.addEventListener("change", checkDateAvailability);
+                dateInput.addEventListener("input", checkDateAvailability);
+
                 function getSelectedPlan() {
                     var checked = document.querySelector(
                         'input[name="plan"]:checked',
@@ -955,6 +1004,10 @@
 
                         if (!date) {
                             alert("ご利用日を選択してください");
+                            return;
+                        }
+                        if (reservedDates.indexOf(date) !== -1) {
+                            alert("この日付はすでに予約されています。別の日付をお選びください。");
                             return;
                         }
                         if (!name) {

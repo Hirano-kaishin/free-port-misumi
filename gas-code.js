@@ -191,6 +191,8 @@ function doGet(e) {
     });
   } else if (action === 'checkPassword') {
     result = { valid: e.parameter.pw === ADMIN_PASSWORD };
+  } else if (action === 'getReservedDates') {
+    result = { dates: getReservedDates() };
   } else {
     result = { error: 'unknown action' };
   }
@@ -237,15 +239,44 @@ function doPost(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// ========== 予約済み日付の取得 ==========
+function getReservedDates() {
+  var ss = getSpreadsheet();
+  var sheet = ss.getSheetByName('reservations');
+  if (!sheet || sheet.getLastRow() <= 1) return [];
+  var data = sheet.getDataRange().getValues();
+  var dates = [];
+  for (var i = 1; i < data.length; i++) {
+    var d = data[i][1]; // 宿泊日 列
+    if (!d) continue;
+    if (d instanceof Date) {
+      var y = d.getFullYear();
+      var m = ('0' + (d.getMonth() + 1)).slice(-2);
+      var day = ('0' + d.getDate()).slice(-2);
+      dates.push(y + '-' + m + '-' + day);
+    } else {
+      dates.push(String(d));
+    }
+  }
+  return dates;
+}
+
 // ========== 既存の予約処理 ==========
 function handleReservation(payload) {
-  // 既存のコードをここに移動してください
-  // 現在のdoPost内の予約処理ロジックをそのまま使います
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName('reservations');
   if (!sheet) {
     sheet = ss.insertSheet('reservations');
     sheet.appendRow(['日時', '宿泊日', '人数', 'プラン', 'オプション', '合計', '名前', 'メール', '電話', '備考']);
+  }
+
+  // 重複予約チェック（同日1組のみ）
+  var reserved = getReservedDates();
+  if (payload.date && reserved.indexOf(payload.date) !== -1) {
+    return ContentService.createTextOutput(JSON.stringify({
+      error: 'duplicate',
+      message: 'この日付はすでに予約されています'
+    })).setMimeType(ContentService.MimeType.JSON);
   }
 
   sheet.appendRow([
