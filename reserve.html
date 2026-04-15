@@ -393,8 +393,8 @@
                             ><span class="ja">ご利用日</span>Date</label
                         >
                         <input type="date" class="rsv-input" id="rsvDate" />
-                        <div id="dateWarning" style="display:none;color:#e74c3c;font-size:13px;margin-top:8px;font-weight:500">⚠ この日付はすでに予約されています。別の日付をお選びください。</div>
-                        <div id="reservedList" style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px;line-height:1.6"></div>
+                        <div id="dateWarning" style="display:none;color:#e74c3c;font-size:13px;margin-top:8px;font-weight:500">⚠ この日付は予約不可です。別の日付をお選びください。</div>
+                        <div id="selectedDateInfo" style="display:none;font-size:12px;color:rgba(255,255,255,0.55);margin-top:6px;line-height:1.6"></div>
                     </div>
                     <div class="rsv-group" style="margin-bottom: 0">
                         <label class="rsv-label"
@@ -818,7 +818,7 @@
                     "https://script.google.com/macros/s/AKfycbzqbJ-ztqgewolaiKuYAlwcDCCaiJIaiA9CTY4uUkuPDhRjD69bk7P_NnjmVG0vsHJaJw/exec";
                 var reservations = []; // [{date, plan, timeSlot}]
                 var dateWarning = document.getElementById("dateWarning");
-                var reservedList = document.getElementById("reservedList");
+                var selectedDateInfo = document.getElementById("selectedDateInfo");
                 var timeSlotSection = document.getElementById("timeSlotSection");
 
                 function formatJpDate(ymd) {
@@ -832,33 +832,11 @@
                     return checked ? checked.value : "";
                 }
 
-                function renderReservedList() {
-                    var byDate = {};
-                    reservations.forEach(function (r) {
-                        if (r.date < dateInput.min) return;
-                        if (!byDate[r.date]) byDate[r.date] = [];
-                        byDate[r.date].push(r);
-                    });
-                    var dates = Object.keys(byDate).sort();
-                    if (dates.length === 0) { reservedList.innerHTML = ""; return; }
-                    var lines = dates.map(function (date) {
-                        var rs = byDate[date];
-                        var fullDay = rs.filter(function (r) { return r.plan !== "サウナのみ"; });
-                        if (fullDay.length > 0) {
-                            return formatJpDate(date) + "（終日予約済み）";
-                        }
-                        var slots = rs.map(function (r) { return r.timeSlot; }).filter(Boolean).sort();
-                        return formatJpDate(date) + " サウナのみ予約済み: " + slots.join(" / ");
-                    });
-                    reservedList.innerHTML = "予約済み:<br>" + lines.join("<br>");
-                }
-
                 fetch(GAS_URL_BASE + "?action=getReservations")
                     .then(function (r) { return r.json(); })
                     .then(function (data) {
                         if (!data || !data.reservations) return;
                         reservations = data.reservations;
-                        renderReservedList();
                         checkDateAvailability();
                     })
                     .catch(function () { /* 取得失敗時は無視、送信時にサーバーで再チェック */ });
@@ -868,8 +846,9 @@
                     var plan = getSelectedPlan();
                     var slot = getSelectedTimeSlot();
                     var conflict = false;
+                    var onDate = [];
                     if (date) {
-                        var onDate = reservations.filter(function (r) { return r.date === date; });
+                        onDate = reservations.filter(function (r) { return r.date === date; });
                         if (plan === "saunaonly") {
                             var hasFullDay = onDate.some(function (r) { return r.plan !== "サウナのみ"; });
                             if (hasFullDay) conflict = true;
@@ -880,8 +859,30 @@
                     }
                     dateWarning.style.display = conflict ? "block" : "none";
                     dateWarning.textContent = plan === "saunaonly"
-                        ? "⚠ この日付・時間帯はすでに予約されています。別の日付または時間帯をお選びください。"
-                        : "⚠ この日付はすでに予約されています。別の日付をお選びください。";
+                        ? "⚠ この日付・時間帯は予約不可です。別の日付または時間帯をお選びください。"
+                        : "⚠ この日付は予約不可です。別の日付をお選びください。";
+
+                    // サウナのみ選択時、その日付の予約済み時間枠を案内
+                    if (selectedDateInfo) {
+                        if (date && plan === "saunaonly" && onDate.length > 0) {
+                            var hasFull = onDate.some(function (r) { return r.plan !== "サウナのみ"; });
+                            if (hasFull) {
+                                selectedDateInfo.innerHTML = "この日は終日予約不可です。";
+                                selectedDateInfo.style.display = "block";
+                            } else {
+                                var takenSlots = onDate.map(function (r) { return r.timeSlot; }).filter(Boolean).sort();
+                                if (takenSlots.length > 0) {
+                                    selectedDateInfo.innerHTML = "この日の予約不可時間帯: " + takenSlots.join(" / ");
+                                    selectedDateInfo.style.display = "block";
+                                } else {
+                                    selectedDateInfo.style.display = "none";
+                                }
+                            }
+                        } else {
+                            selectedDateInfo.style.display = "none";
+                        }
+                    }
+
                     var btn = document.getElementById("submitBtn");
                     if (btn) {
                         btn.disabled = conflict;
@@ -1128,7 +1129,7 @@
                             if (onDate.length > 0) dup = true;
                         }
                         if (dup) {
-                            alert("この日付・時間帯はすでに予約されています。別の日付または時間帯をお選びください。");
+                            alert("この日付・時間帯は予約不可です。別の日付または時間帯をお選びください。");
                             return;
                         }
                         if (!name) {
