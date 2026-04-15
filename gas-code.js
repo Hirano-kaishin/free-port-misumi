@@ -4,7 +4,7 @@
 // ====================================================
 
 // 設定
-var ADMIN_PASSWORD = '0000'; // 管理画面のパスワード（変更してください）
+var ADMIN_PASSWORD = '0000';
 var SPREADSHEET_ID = '183fNtEqTYHBJSskXH7PBKG_vPu7FKqErRGN7L0o6giQ';
 
 function getSpreadsheet() {
@@ -14,7 +14,6 @@ function getSpreadsheet() {
   return SpreadsheetApp.getActiveSpreadsheet();
 }
 
-// ========== シート初期化 ==========
 function initSheets() {
   var ss = getSpreadsheet();
   var sheets = ['sections', 'plans', 'options', 'images'];
@@ -23,38 +22,28 @@ function initSheets() {
       ss.insertSheet(name);
     }
   });
-
-  // sections ヘッダー
   var sec = ss.getSheetByName('sections');
   if (sec.getLastRow() === 0) {
     sec.appendRow(['id', 'page', 'section_key', 'label_ja', 'label_en', 'title', 'body', 'body2', 'order']);
   }
-
-  // plans ヘッダー
   var plans = ss.getSheetByName('plans');
   if (plans.getLastRow() === 0) {
     plans.appendRow(['id', 'page', 'plan_key', 'name_en', 'name_ja', 'price', 'description', 'description2', 'tags', 'order']);
   }
-
-  // options ヘッダー
   var opts = ss.getSheetByName('options');
   if (opts.getLastRow() === 0) {
     opts.appendRow(['id', 'page', 'group_key', 'group_name_en', 'group_name_ja', 'item_name', 'price', 'order']);
   }
-
-  // images ヘッダー
   var imgs = ss.getSheetByName('images');
   if (imgs.getLastRow() === 0) {
     imgs.appendRow(['id', 'page', 'section_key', 'image_url', 'alt', 'position', 'order']);
   }
 }
 
-// ========== データ読み込み ==========
 function getSheetData(sheetName) {
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(sheetName);
   if (!sheet || sheet.getLastRow() <= 1) return [];
-
   var data = sheet.getDataRange().getValues();
   var headers = data[0];
   var rows = [];
@@ -73,7 +62,6 @@ function getPageData(page) {
   var allPlans = getSheetData('plans');
   var allOptions = getSheetData('options');
   var allImages = getSheetData('images');
-
   return {
     sections: allSections.filter(function(r) { return r.page === page; }),
     plans: allPlans.filter(function(r) { return r.page === page; }),
@@ -82,14 +70,12 @@ function getPageData(page) {
   };
 }
 
-// ========== データ書き込み ==========
 function updateSheetRow(sheetName, id, updates) {
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(sheetName);
   var data = sheet.getDataRange().getValues();
   var headers = data[0];
   var idCol = headers.indexOf('id');
-
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][idCol]) === String(id)) {
       for (var key in updates) {
@@ -119,7 +105,6 @@ function deleteSheetRow(sheetName, id) {
   var data = sheet.getDataRange().getValues();
   var headers = data[0];
   var idCol = headers.indexOf('id');
-
   for (var i = data.length - 1; i >= 1; i--) {
     if (String(data[i][idCol]) === String(id)) {
       sheet.deleteRow(i + 1);
@@ -129,46 +114,26 @@ function deleteSheetRow(sheetName, id) {
   return false;
 }
 
-// ========== 全データ保存（ページ単位で一括） ==========
 function savePageData(page, payload) {
   var ss = getSpreadsheet();
-
-  // sections
-  if (payload.sections) {
-    replacePageData(ss, 'sections', page, payload.sections);
-  }
-  // plans
-  if (payload.plans) {
-    replacePageData(ss, 'plans', page, payload.plans);
-  }
-  // options
-  if (payload.options) {
-    replacePageData(ss, 'options', page, payload.options);
-  }
-  // images
-  if (payload.images) {
-    replacePageData(ss, 'images', page, payload.images);
-  }
-
+  if (payload.sections) { replacePageData(ss, 'sections', page, payload.sections); }
+  if (payload.plans) { replacePageData(ss, 'plans', page, payload.plans); }
+  if (payload.options) { replacePageData(ss, 'options', page, payload.options); }
+  if (payload.images) { replacePageData(ss, 'images', page, payload.images); }
   return { success: true };
 }
 
 function replacePageData(ss, sheetName, page, newRows) {
   var sheet = ss.getSheetByName(sheetName);
   if (!sheet) return;
-
   var data = sheet.getDataRange().getValues();
   var headers = data[0];
   var pageCol = headers.indexOf('page');
-
-  // 該当ページの行を削除（下から）
   for (var i = data.length - 1; i >= 1; i--) {
     if (String(data[i][pageCol]) === page) {
       sheet.deleteRow(i + 1);
     }
   }
-
-  // 新しいデータを追加
   newRows.forEach(function(row) {
     row.page = page;
     var newRow = headers.map(function(h) { return row[h] !== undefined ? row[h] : ''; });
@@ -176,70 +141,6 @@ function replacePageData(ss, sheetName, page, newRows) {
   });
 }
 
-// ========== HTTP ハンドラ ==========
-function doGet(e) {
-  var action = e.parameter.action || '';
-  var result = {};
-
-  if (action === 'getPageData') {
-    result = getPageData(e.parameter.page || '');
-  } else if (action === 'getAllPages') {
-    var pages = ['camp', 'coffee', 'gear', 'goods', 'furniture', 'about', 'access'];
-    result = {};
-    pages.forEach(function(p) {
-      result[p] = getPageData(p);
-    });
-  } else if (action === 'checkPassword') {
-    result = { valid: e.parameter.pw === ADMIN_PASSWORD };
-  } else if (action === 'getReservedDates') {
-    result = { dates: getReservedDates() };
-  } else {
-    result = { error: 'unknown action' };
-  }
-
-  return ContentService.createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  var payload;
-  try {
-    payload = JSON.parse(e.postData.contents);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ error: 'invalid JSON' }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  // 既存の予約処理（actionがない場合）
-  if (!payload.action || payload.action === 'submitReservation') {
-    return handleReservation(payload);
-  }
-
-  // CMS操作はパスワード必須
-  if (payload.password !== ADMIN_PASSWORD) {
-    return ContentService.createTextOutput(JSON.stringify({ error: 'unauthorized' }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  var result = {};
-
-  if (payload.action === 'savePageData') {
-    result = savePageData(payload.page, payload.data);
-  } else if (payload.action === 'updateRow') {
-    result = { success: updateSheetRow(payload.sheet, payload.id, payload.data) };
-  } else if (payload.action === 'addRow') {
-    result = { success: addSheetRow(payload.sheet, payload.data) };
-  } else if (payload.action === 'deleteRow') {
-    result = { success: deleteSheetRow(payload.sheet, payload.id) };
-  } else {
-    result = { error: 'unknown action' };
-  }
-
-  return ContentService.createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-// ========== 予約済み日付の取得 ==========
 function getReservedDates() {
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName('reservations');
@@ -247,7 +148,7 @@ function getReservedDates() {
   var data = sheet.getDataRange().getValues();
   var dates = [];
   for (var i = 1; i < data.length; i++) {
-    var d = data[i][1]; // 宿泊日 列
+    var d = data[i][1];
     if (!d) continue;
     if (d instanceof Date) {
       var y = d.getFullYear();
@@ -261,7 +162,57 @@ function getReservedDates() {
   return dates;
 }
 
-// ========== 既存の予約処理 ==========
+function doGet(e) {
+  var action = e.parameter.action || '';
+  var result = {};
+  if (action === 'getPageData') {
+    result = getPageData(e.parameter.page || '');
+  } else if (action === 'getAllPages') {
+    var pages = ['camp', 'coffee', 'gear', 'goods', 'furniture', 'about', 'access'];
+    result = {};
+    pages.forEach(function(p) { result[p] = getPageData(p); });
+  } else if (action === 'checkPassword') {
+    result = { valid: e.parameter.pw === ADMIN_PASSWORD };
+  } else if (action === 'getReservedDates') {
+    result = { dates: getReservedDates() };
+  } else {
+    result = { error: 'unknown action' };
+  }
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var payload;
+  try {
+    payload = JSON.parse(e.postData.contents);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ error: 'invalid JSON' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  if (!payload.action || payload.action === 'submitReservation') {
+    return handleReservation(payload);
+  }
+  if (payload.password !== ADMIN_PASSWORD) {
+    return ContentService.createTextOutput(JSON.stringify({ error: 'unauthorized' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  var result = {};
+  if (payload.action === 'savePageData') {
+    result = savePageData(payload.page, payload.data);
+  } else if (payload.action === 'updateRow') {
+    result = { success: updateSheetRow(payload.sheet, payload.id, payload.data) };
+  } else if (payload.action === 'addRow') {
+    result = { success: addSheetRow(payload.sheet, payload.data) };
+  } else if (payload.action === 'deleteRow') {
+    result = { success: deleteSheetRow(payload.sheet, payload.id) };
+  } else {
+    result = { error: 'unknown action' };
+  }
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function handleReservation(payload) {
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName('reservations');
@@ -280,19 +231,11 @@ function handleReservation(payload) {
   }
 
   sheet.appendRow([
-    new Date(),
-    payload.date,
-    payload.guests,
-    payload.plan,
-    payload.options,
-    payload.total,
-    payload.name,
-    payload.email,
-    payload.phone,
-    payload.notes
+    new Date(), payload.date, payload.guests, payload.plan,
+    payload.options, payload.total, payload.name, payload.email,
+    payload.phone, payload.notes
   ]);
 
-  // 予約内容テンプレート
   var reservationDetail =
     '■ ご利用日: ' + payload.date + '\n' +
     '■ 人数: ' + payload.guests + '名\n' +
@@ -302,19 +245,16 @@ function handleReservation(payload) {
     (payload.phone ? '■ 電話: ' + payload.phone + '\n' : '') +
     (payload.notes ? '■ 備考: ' + payload.notes + '\n' : '');
 
-  // お客様への自動返信メール
+  // お客様への確認メール
   if (payload.email) {
     try {
       MailApp.sendEmail({
         to: payload.email,
         subject: '【FREE PORT】ご予約ありがとうございます',
-        body: payload.name + ' 様\n\n' +
-          'ご予約を承りました。\n\n' +
+        body: payload.name + ' 様\n\nご予約を承りました。\n\n' +
           reservationDetail + '\n' +
           'ご不明な点がございましたら、お気軽にご連絡ください。\n\n' +
-          'FREE PORT\n' +
-          '〒869-3207 熊本県宇城市三角町三角浦1337-11\n' +
-          'milspec.cps@gmail.com'
+          'FREE PORT\n〒869-3207 熊本県宇城市三角町三角浦1337-11\nmilspec.cps@gmail.com'
       });
     } catch(e) {
       Logger.log('お客様メール送信エラー: ' + e.toString());
