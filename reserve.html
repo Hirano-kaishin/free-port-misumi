@@ -924,6 +924,16 @@
                     var subtotal = base * n;
                     var optLines = [];
 
+                    // Poncho rental allowed even for saunaonly
+                    if (plan === "saunaonly") {
+                        var ponchoCheckS = document.getElementById("ponchoCheck");
+                        if (ponchoCheckS && ponchoCheckS.checked) {
+                            var pqtyS = parseInt(ponchoCheckS.closest("tr").querySelector(".sauna-qty").value) || 1;
+                            subtotal += 500 * pqtyS;
+                            optLines.push("ポンチョ＆ハット x" + pqtyS);
+                        }
+                    }
+
                     // Sauna calculation (not for omakase / saunaonly)
                     if (plan !== "omakase" && plan !== "saunaonly") {
                         var saunaCheck = document.getElementById("saunaCheck");
@@ -985,9 +995,10 @@
                         if (timeSlotSection) {
                             timeSlotSection.style.display = selectedPlan === "saunaonly" ? "" : "none";
                         }
-                        // Omakase / SaunaOnly: disable both sauna and rental
+                        // Omakase: disable both sauna and rental
+                        // SaunaOnly: disable rental + sauna row, but allow poncho rental
                         // Camp Stay: sauna included, disable sauna option
-                        if (selectedPlan === "omakase" || selectedPlan === "saunaonly") {
+                        if (selectedPlan === "omakase") {
                             rentalSection.style.opacity = "0.3";
                             rentalSection.style.pointerEvents = "none";
                             saunaSection.style.opacity = "0.3";
@@ -1000,6 +1011,25 @@
                                 cb.checked = false;
                                 cb.closest("tr").classList.remove("checked");
                             });
+                        } else if (selectedPlan === "saunaonly") {
+                            rentalSection.style.opacity = "0.3";
+                            rentalSection.style.pointerEvents = "none";
+                            saunaSection.style.opacity = "1";
+                            saunaSection.style.pointerEvents = "auto";
+                            checks.forEach(function (cb) {
+                                cb.checked = false;
+                                cb.closest("tr").classList.remove("checked");
+                            });
+                            // Disable the バレルサウナ checkbox row (sauna is the plan itself)
+                            var saunaCheckEl = document.getElementById("saunaCheck");
+                            if (saunaCheckEl) {
+                                saunaCheckEl.checked = false;
+                                saunaCheckEl.disabled = true;
+                                var saunaRow = saunaCheckEl.closest("tr");
+                                saunaRow.classList.remove("checked");
+                                saunaRow.style.opacity = "0.3";
+                                saunaRow.style.pointerEvents = "none";
+                            }
                         } else if (selectedPlan === "normal") {
                             rentalSection.style.opacity = "1";
                             rentalSection.style.pointerEvents = "auto";
@@ -1009,11 +1039,25 @@
                                 cb.checked = false;
                                 cb.closest("tr").classList.remove("checked");
                             });
+                            var saunaCheckEl2 = document.getElementById("saunaCheck");
+                            if (saunaCheckEl2) {
+                                saunaCheckEl2.disabled = false;
+                                var saunaRow2 = saunaCheckEl2.closest("tr");
+                                saunaRow2.style.opacity = "";
+                                saunaRow2.style.pointerEvents = "";
+                            }
                         } else {
                             rentalSection.style.opacity = "1";
                             rentalSection.style.pointerEvents = "auto";
                             saunaSection.style.opacity = "1";
                             saunaSection.style.pointerEvents = "auto";
+                            var saunaCheckEl3 = document.getElementById("saunaCheck");
+                            if (saunaCheckEl3) {
+                                saunaCheckEl3.disabled = false;
+                                var saunaRow3 = saunaCheckEl3.closest("tr");
+                                saunaRow3.style.opacity = "";
+                                saunaRow3.style.pointerEvents = "";
+                            }
                         }
                         calcTotal();
                         checkDateAvailability();
